@@ -1,0 +1,33 @@
+version: "3"
+services:
+  pccs.internal:
+    image: ncl-sgx/pccs
+    build:
+      context: ./pccs
+      args:
+        DCAP: DCAP_1.10
+        HTTPS_PORT: 8081
+        HOST: 0.0.0.0
+        API_KEY: {{ input your API KEY here }}
+        ADMIN_TOKEN: 8UVh7NCQuaN89bsnx1Bs
+        USER_TOKEN: DaX2mEjoe2vqFRp5FYQv
+    networks:
+      - pccs
+  openenclave.internal:
+    image: ncl-sgx/openenclave
+    build:
+      context: ./openenclave
+      args:
+        PCCS_SERVER: pccs.internal:8081
+    devices:
+      - /dev/sgx_enclave:/dev/sgx_enclave
+      - /dev/sgx_provision:/dev/sgx_provision
+    volumes:
+      - /dev/sgx:/dev/sgx
+    networks:
+      - pccs
+    depends_on:
+      - pccs.internal
+
+networks:
+  pccs:
