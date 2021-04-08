@@ -14,7 +14,7 @@ services:
     networks:
       - pccs
   openenclave.internal:
-    image: ncl-sgx/openenclave
+    image: ncl-sgx/openenclave:1.8
     build:
       context: ./openenclave
       args:
@@ -27,6 +27,9 @@ services:
       - /dev/sgx:/dev/sgx
     networks:
       - pccs
+    environment:
+      OE_LOG_LEVEL: INFO
+    command: ctest -V
     depends_on:
       - pccs.internal
 

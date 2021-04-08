@@ -13,7 +13,9 @@ RUN apt-get update \
     && scripts/ansible/install-ansible.sh \
     && ansible-playbook scripts/ansible/oe-contributors-setup.yml \
     && scripts/ansible/remove-ansible.sh \
-    && apt-get install --no-install-recommends -y libsgx-dcap-default-qpl \
+    # && apt-get install --no-install-recommends -y libsgx-dcap-default-qpl \
+    && curl https://download.01.org/intel-sgx/sgx-dcap/1.10/linux/distro/ubuntu18.04-server/debian_pkgs/libs/libsgx-dcap-default-qpl/libsgx-dcap-default-qpl_1.8.100.2-bionic1_amd64.deb --output libsgx-dcap-default-qpl.deb \
+    && dpkg -i ./libsgx-dcap-default-qpl.deb \
     && rm -rf /var/lib/apt/lists/* \
     && test -z $(dpkg --list | grep az-dcap-client) \
     && ln -s $(readlink -f /usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so.1) /usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so \
@@ -25,6 +27,6 @@ RUN apt-get update \
     && ninja \
     && ninja install
 
-WORKDIR /root
+WORKDIR /root/openenclave/build
 
-CMD cd openenclave/build && ctest --verbose
+CMD tail -f /dev/null
