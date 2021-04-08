@@ -1,11 +1,12 @@
 version: "3"
 services:
   pccs.internal:
-    image: ncl-sgx/pccs
+    image: ncl-sgx/pccs:1.8
     build:
       context: ./pccs
       args:
-        DCAP_VERSION: DCAP_1.10
+        DCAP_VERSION: DCAP_1.8
+        CONFIG_FILE: ./config/production-0.json
         HTTPS_PORT: 8081
         HOST: 0.0.0.0
         API_KEY: {{ input your API KEY here }}

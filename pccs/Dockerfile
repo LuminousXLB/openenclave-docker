@@ -19,11 +19,17 @@ RUN apt-get update \
     && mv SGXDataCenterAttestationPrimitives/QuoteGeneration/pccs ./ \
     && mkdir -p pccs/lib \
     && mv SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/out/libPCKCertSelection.so ./pccs/lib/ \
-    && rm -rf SGXDataCenterAttestationPrimitives
+    && rm -rf SGXDataCenterAttestationPrimitives \
+    && cd /root/pccs \
+    && npm install \
+    && npm config set engine-strict true \
+    && npm ci \
+    && npm cache clean --force
 
 WORKDIR /root/pccs
 
 ARG CONFIG_FILE=./config/default.json
+ARG _CONFIG_FILE=./config/default.json
 
 ARG HTTPS_PORT=8081
 ARG HOST=0.0.0.0
@@ -34,15 +40,12 @@ ARG USER_TOKEN
 RUN test -n "${API_KEY}" \
     && test -n "${ADMIN_TOKEN}" \
     && test -n "${USER_TOKEN}" \
-    && npm install \
-    && npm config set engine-strict true \
-    && npm ci \
-    && npm cache clean --force \
-    && sed "/\"HTTPS_PORT\"*/c\ \ \ \ \"HTTPS_PORT\" \: ${HTTPS_PORT}," -i ${CONFIG_FILE} \
-    && sed "/\"hosts\"*/c\ \ \ \ \"hosts\" \: \"${HOST}\"," -i ${CONFIG_FILE} \
-    && sed "/\"ApiKey\"*/c\ \ \ \ \"ApiKey\" \: \"${API_KEY}\"," -i ${CONFIG_FILE} \
-    && sed "/\"AdminTokenHash\"*/c\ \ \ \ \"AdminTokenHash\" \: \"$(echo -n "${ADMIN_TOKEN}" | sha512sum | tr -d '[:space:]-')\"," -i ${CONFIG_FILE} \
-    && sed "/\"UserTokenHash\"*/c\ \ \ \ \"UserTokenHash\" \: \"$(echo -n "${USER_TOKEN}" | sha512sum | tr -d '[:space:]-')\"," -i ${CONFIG_FILE} \
+    && (test ${CONFIG_FILE} = ${_CONFIG_FILE} || cp ${CONFIG_FILE} ${_CONFIG_FILE}) \
+    && sed "/\"HTTPS_PORT\"*/c\ \ \ \ \"HTTPS_PORT\" \: ${HTTPS_PORT}," -i ${_CONFIG_FILE} \
+    && sed "/\"hosts\"*/c\ \ \ \ \"hosts\" \: \"${HOST}\"," -i ${_CONFIG_FILE} \
+    && sed "/\"ApiKey\"*/c\ \ \ \ \"ApiKey\" \: \"${API_KEY}\"," -i ${_CONFIG_FILE} \
+    && sed "/\"AdminTokenHash\"*/c\ \ \ \ \"AdminTokenHash\" \: \"$(echo -n "${ADMIN_TOKEN}" | sha512sum | tr -d '[:space:]-')\"," -i ${_CONFIG_FILE} \
+    && sed "/\"UserTokenHash\"*/c\ \ \ \ \"UserTokenHash\" \: \"$(echo -n "${USER_TOKEN}" | sha512sum | tr -d '[:space:]-')\"," -i ${_CONFIG_FILE} \
     && mkdir ssl_key \
     && openssl genrsa -out ssl_key/private.pem 2048 \
     && openssl req -new -key ssl_key/private.pem -out ssl_key/csr.pem -subj "/CN=pccs.internal/" \
