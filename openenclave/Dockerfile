@@ -9,6 +9,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y ca-certificates git python3-apt linux-headers-$(uname -r) \
     && git clone --recursive https://github.com/openenclave/openenclave.git /root/openenclave \
     && cd /root/openenclave \
+    && git checkout ${OE_VERSION} \
     && scripts/ansible/install-ansible.sh \
     && ansible-playbook scripts/ansible/oe-contributors-setup.yml \
     && scripts/ansible/remove-ansible.sh \
@@ -26,4 +27,4 @@ RUN apt-get update \
 
 WORKDIR /root
 
-CMD tail -f /dev/null
+CMD cd openenclave/build && ctest --verbose

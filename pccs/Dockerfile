@@ -1,7 +1,7 @@
 FROM ubuntu:bionic
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG DCAP=DCAP_1.10
+ARG DCAP_VERSION=DCAP_1.10
 
 WORKDIR /root
 
@@ -12,7 +12,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git \
     && cd SGXDataCenterAttestationPrimitives \
-    && git checkout ${DCAP} \
+    && git checkout ${DCAP_VERSION} \
     && cd tools/PCKCertSelection \
     && make -j -C PCKCertSelectionLib \
     && cd ../../../ \
