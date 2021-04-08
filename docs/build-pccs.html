@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+body {background-color: black;}
+pre {
+	font-weight: normal;
+	color: #bbb;
+	white-space: -moz-pre-wrap;
+	white-space: -o-pre-wrap;
+	white-space: -pre-wrap;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+b {font-weight: normal}
+b.BOLD {color: #fff}
+b.ITA {font-style: italic}
+b.UND {text-decoration: underline}
+b.STR {text-decoration: line-through}
+b.UNDSTR {text-decoration: underline line-through}
+b.BLK {color: #000000}
+b.RED {color: #aa0000}
+b.GRN {color: #00aa00}
+b.YEL {color: #aa5500}
+b.BLU {color: #0000aa}
+b.MAG {color: #aa00aa}
+b.CYN {color: #00aaaa}
+b.WHI {color: #aaaaaa}
+b.HIK {color: #555555}
+b.HIR {color: #ff5555}
+b.HIG {color: #55ff55}
+b.HIY {color: #ffff55}
+b.HIB {color: #5555ff}
+b.HIM {color: #ff55ff}
+b.HIC {color: #55ffff}
+b.HIW {color: #ffffff}
+b.BBLK {background-color: #000000}
+b.BRED {background-color: #aa0000}
+b.BGRN {background-color: #00aa00}
+b.BYEL {background-color: #aa5500}
+b.BBLU {background-color: #0000aa}
+b.BMAG {background-color: #aa00aa}
+b.BCYN {background-color: #00aaaa}
+b.BWHI {background-color: #aaaaaa}
+</style>
+</head>
+<body>
+<pre>Building pccs.internal
+Sending build context to Docker daemon  4.096kB
+
+Step 1/14 : FROM ubuntu:bionic
+bionic: Pulling from library/ubuntu
+6e0aa5e7af40: Pulling fs layer
+d47239a868b3: Pulling fs layer
+49cbb10cca85: Pulling fs layer
+d47239a868b3: Verifying Checksum
+d47239a868b3: Download complete
+49cbb10cca85: Download complete
+6e0aa5e7af40: Download complete
+6e0aa5e7af40: Pull complete
+d47239a868b3: Pull complete
+49cbb10cca85: Pull complete
+Digest: sha256:122f506735a26c0a1aff2363335412cfc4f84de38326356d31ee00c2cbe52171
+Status: Downloaded newer image for ubuntu:bionic
+ ---&gt; 3339fde08fc3
+Step 2/14 : ARG DEBIAN_FRONTEND=noninteractive
+ ---&gt; Running in 32e3b683587d
+Removing intermediate container 32e3b683587d
+ ---&gt; cf010abdfd05
+Step 3/14 : ARG DCAP_VERSION=DCAP_1.10
+ ---&gt; Running in dd6842b91041
+Removing intermediate container dd6842b91041
+ ---&gt; d3d6d142a515
+Step 4/14 : WORKDIR /root
+ ---&gt; Running in 97500566779a
+Removing intermediate container 97500566779a
+ ---&gt; 49bb1dc09833
+Step 5/14 : RUN apt-get update     &amp;&amp; apt-get install --no-install-recommends -y ca-certificates curl g++ git make openssl python zip     &amp;&amp; curl -fsSL https://deb.nodesource.com/setup_14.x | bash -     &amp;&amp; apt-get install --no-install-recommends -y nodejs     &amp;&amp; rm -rf /var/lib/apt/lists/*     &amp;&amp; git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git     &amp;&amp; cd SGXDataCenterAttestationPrimitives     &amp;&amp; git checkout ${DCAP_VERSION}     &amp;&amp; cd tools/PCKCertSelection     &amp;&amp; make -j -C PCKCertSelectionLib     &amp;&amp; cd ../../../     &amp;&amp; mv SGXDataCenterAttestationPrimitives/QuoteGeneration/pccs ./     &amp;&amp; mkdir -p pccs/lib     &amp;&amp; mv SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/out/libPCKCertSelection.so ./pccs/lib/     &amp;&amp; rm -rf SGXDataCenterAttestationPrimitives
+ ---&gt; Running in 985d6fe9a1e4
+Get:1 http://archive.ubuntu.com/ubuntu bionic InRelease [242 kB]
+Get:2 http://security.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
+Get:3 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
+Get:4 http://archive.ubuntu.com/ubuntu bionic-backports InRelease [74.6 kB]
+Get:5 http://security.ubuntu.com/ubuntu bionic-security/multiverse amd64 Packages [24.5 kB]
+Get:6 http://archive.ubuntu.com/ubuntu bionic/main amd64 Packages [1344 kB]
+Get:7 http://security.ubuntu.com/ubuntu bionic-security/restricted amd64 Packages [348 kB]
+Get:8 http://archive.ubuntu.com/ubuntu bionic/universe amd64 Packages [11.3 MB]
+Get:9 http://security.ubuntu.com/ubuntu bionic-security/universe amd64 Packages [1402 kB]
+Get:10 http://archive.ubuntu.com/ubuntu bionic/restricted amd64 Packages [13.5 kB]
+Get:11 http://archive.ubuntu.com/ubuntu bionic/multiverse amd64 Packages [186 kB]
+Get:12 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 Packages [2172 kB]
+Get:13 http://archive.ubuntu.com/ubuntu bionic-updates/multiverse amd64 Packages [31.4 kB]
+Get:14 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 Packages [2476 kB]
+Get:15 http://archive.ubuntu.com/ubuntu bionic-updates/restricted amd64 Packages [378 kB]
+Get:16 http://archive.ubuntu.com/ubuntu bionic-backports/universe amd64 Packages [11.4 kB]
+Get:17 http://archive.ubuntu.com/ubuntu bionic-backports/main amd64 Packages [11.3 kB]
+Get:18 http://security.ubuntu.com/ubuntu bionic-security/main amd64 Packages [2045 kB]
+Fetched 22.3 MB in 4s (5594 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  binutils binutils-common binutils-x86-64-linux-gnu cpp cpp-7 g++-7 gcc gcc-7
+  gcc-7-base git-man libasan4 libasn1-8-heimdal libatomic1 libbinutils
+  libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libcurl3-gnutls libcurl4
+  liberror-perl libexpat1 libgcc-7-dev libgdbm-compat4 libgdbm5 libgomp1
+  libgssapi-krb5-2 libgssapi3-heimdal libhcrypto4-heimdal libheimbase1-heimdal
+  libheimntlm0-heimdal libhx509-5-heimdal libisl19 libitm1 libk5crypto3
+  libkeyutils1 libkrb5-26-heimdal libkrb5-3 libkrb5support0 libldap-2.4-2
+  libldap-common liblsan0 libmpc3 libmpfr6 libmpx2 libnghttp2-14 libperl5.26
+  libpsl5 libpython-stdlib libpython2.7-minimal libpython2.7-stdlib
+  libquadmath0 libreadline7 libroken18-heimdal librtmp1 libsasl2-2
+  libsasl2-modules-db libsqlite3-0 libssl1.1 libstdc++-7-dev libtsan0
+  libubsan0 libwind0-heimdal linux-libc-dev mime-support perl
+  perl-modules-5.26 python-minimal python2.7 python2.7-minimal readline-common
+Suggested packages:
+  binutils-doc cpp-doc gcc-7-locales g++-multilib g++-7-multilib gcc-7-doc
+  libstdc++6-7-dbg gcc-multilib manpages-dev autoconf automake libtool flex
+  bison gdb gcc-doc gcc-7-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg
+  libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg
+  libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg gettext-base git-daemon-run
+  | git-daemon-sysvinit git-doc git-el git-email git-gui gitk gitweb git-cvs
+  git-mediawiki git-svn glibc-doc gdbm-l10n krb5-doc krb5-user libstdc++-7-doc
+  make-doc perl-doc libterm-readline-gnu-perl | libterm-readline-perl-perl
+  python-doc python-tk python2.7-doc binfmt-support readline-doc
+Recommended packages:
+  patch less ssh-client manpages manpages-dev krb5-locales publicsuffix
+  libsasl2-modules file xz-utils netbase unzip
+The following NEW packages will be installed:
+  binutils binutils-common binutils-x86-64-linux-gnu ca-certificates cpp cpp-7
+  curl g++ g++-7 gcc gcc-7 gcc-7-base git git-man libasan4 libasn1-8-heimdal
+  libatomic1 libbinutils libc-dev-bin libc6-dev libcc1-0 libcilkrts5
+  libcurl3-gnutls libcurl4 liberror-perl libexpat1 libgcc-7-dev
+  libgdbm-compat4 libgdbm5 libgomp1 libgssapi-krb5-2 libgssapi3-heimdal
+  libhcrypto4-heimdal libheimbase1-heimdal libheimntlm0-heimdal
+  libhx509-5-heimdal libisl19 libitm1 libk5crypto3 libkeyutils1
+  libkrb5-26-heimdal libkrb5-3 libkrb5support0 libldap-2.4-2 libldap-common
+  liblsan0 libmpc3 libmpfr6 libmpx2 libnghttp2-14 libperl5.26 libpsl5
+  libpython-stdlib libpython2.7-minimal libpython2.7-stdlib libquadmath0
+  libreadline7 libroken18-heimdal librtmp1 libsasl2-2 libsasl2-modules-db
+  libsqlite3-0 libssl1.1 libstdc++-7-dev libtsan0 libubsan0 libwind0-heimdal
+  linux-libc-dev make mime-support openssl perl perl-modules-5.26 python
+  python-minimal python2.7 python2.7-minimal readline-common zip
+0 upgraded, 79 newly installed, 0 to remove and 3 not upgraded.
+Need to get 60.6 MB of archives.
+After this operation, 267 MB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 perl-modules-5.26 all 5.26.1-6ubuntu0.5 [2762 kB]
+Get:2 http://archive.ubuntu.com/ubuntu bionic/main amd64 libgdbm5 amd64 1.14.1-6 [26.0 kB]
+Get:3 http://archive.ubuntu.com/ubuntu bionic/main amd64 libgdbm-compat4 amd64 1.14.1-6 [6084 B]
+Get:4 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libperl5.26 amd64 5.26.1-6ubuntu0.5 [3534 kB]
+Get:5 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 perl amd64 5.26.1-6ubuntu0.5 [201 kB]
+Get:6 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libpython2.7-minimal amd64 2.7.17-1~18.04ubuntu1.6 [335 kB]
+Get:7 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 python2.7-minimal amd64 2.7.17-1~18.04ubuntu1.6 [1291 kB]
+Get:8 http://archive.ubuntu.com/ubuntu bionic/main amd64 python-minimal amd64 2.7.15~rc1-1 [28.1 kB]
+Get:9 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libssl1.1 amd64 1.1.1-1ubuntu2.1~18.04.9 [1301 kB]
+Get:10 http://archive.ubuntu.com/ubuntu bionic/main amd64 mime-support all 3.60ubuntu1 [30.1 kB]
+Get:11 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libexpat1 amd64 2.2.5-3ubuntu0.2 [80.5 kB]
+Get:12 http://archive.ubuntu.com/ubuntu bionic/main amd64 readline-common all 7.0-3 [52.9 kB]
+Get:13 http://archive.ubuntu.com/ubuntu bionic/main amd64 libreadline7 amd64 7.0-3 [124 kB]
+Get:14 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libsqlite3-0 amd64 3.22.0-1ubuntu0.4 [499 kB]
+Get:15 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libpython2.7-stdlib amd64 2.7.17-1~18.04ubuntu1.6 [1917 kB]
+Get:16 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 python2.7 amd64 2.7.17-1~18.04ubuntu1.6 [248 kB]
+Get:17 http://archive.ubuntu.com/ubuntu bionic/main amd64 libpython-stdlib amd64 2.7.15~rc1-1 [7620 B]
+Get:18 http://archive.ubuntu.com/ubuntu bionic/main amd64 python amd64 2.7.15~rc1-1 [140 kB]
+Get:19 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 openssl amd64 1.1.1-1ubuntu2.1~18.04.9 [614 kB]
+Get:20 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 ca-certificates all 20210119~18.04.1 [147 kB]
+Get:21 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libkrb5support0 amd64 1.16-2ubuntu0.2 [30.8 kB]
+Get:22 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libk5crypto3 amd64 1.16-2ubuntu0.2 [85.5 kB]
+Get:23 http://archive.ubuntu.com/ubuntu bionic/main amd64 libkeyutils1 amd64 1.5.9-9.2ubuntu2 [8720 B]
+Get:24 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libkrb5-3 amd64 1.16-2ubuntu0.2 [279 kB]
+Get:25 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libgssapi-krb5-2 amd64 1.16-2ubuntu0.2 [122 kB]
+Get:26 http://archive.ubuntu.com/ubuntu bionic/main amd64 libpsl5 amd64 0.19.1-5build1 [41.8 kB]
+Get:27 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 binutils-common amd64 2.30-21ubuntu1~18.04.5 [197 kB]
+Get:28 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libbinutils amd64 2.30-21ubuntu1~18.04.5 [489 kB]
+Get:29 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 binutils-x86-64-linux-gnu amd64 2.30-21ubuntu1~18.04.5 [1839 kB]
+Get:30 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 binutils amd64 2.30-21ubuntu1~18.04.5 [3388 B]
+Get:31 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gcc-7-base amd64 7.5.0-3ubuntu1~18.04 [18.3 kB]
+Get:32 http://archive.ubuntu.com/ubuntu bionic/main amd64 libisl19 amd64 0.19-1 [551 kB]
+Get:33 http://archive.ubuntu.com/ubuntu bionic/main amd64 libmpfr6 amd64 4.0.1-1 [243 kB]
+Get:34 http://archive.ubuntu.com/ubuntu bionic/main amd64 libmpc3 amd64 1.1.0-1 [40.8 kB]
+Get:35 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 cpp-7 amd64 7.5.0-3ubuntu1~18.04 [8591 kB]
+Get:36 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 cpp amd64 4:7.4.0-1ubuntu2.3 [27.7 kB]
+Get:37 http://archive.ubuntu.com/ubuntu bionic/main amd64 libroken18-heimdal amd64 7.5.0+dfsg-1 [41.3 kB]
+Get:38 http://archive.ubuntu.com/ubuntu bionic/main amd64 libasn1-8-heimdal amd64 7.5.0+dfsg-1 [175 kB]
+Get:39 http://archive.ubuntu.com/ubuntu bionic/main amd64 libheimbase1-heimdal amd64 7.5.0+dfsg-1 [29.3 kB]
+Get:40 http://archive.ubuntu.com/ubuntu bionic/main amd64 libhcrypto4-heimdal amd64 7.5.0+dfsg-1 [85.9 kB]
+Get:41 http://archive.ubuntu.com/ubuntu bionic/main amd64 libwind0-heimdal amd64 7.5.0+dfsg-1 [47.8 kB]
+Get:42 http://archive.ubuntu.com/ubuntu bionic/main amd64 libhx509-5-heimdal amd64 7.5.0+dfsg-1 [107 kB]
+Get:43 http://archive.ubuntu.com/ubuntu bionic/main amd64 libkrb5-26-heimdal amd64 7.5.0+dfsg-1 [206 kB]
+Get:44 http://archive.ubuntu.com/ubuntu bionic/main amd64 libheimntlm0-heimdal amd64 7.5.0+dfsg-1 [14.8 kB]
+Get:45 http://archive.ubuntu.com/ubuntu bionic/main amd64 libgssapi3-heimdal amd64 7.5.0+dfsg-1 [96.5 kB]
+Get:46 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libsasl2-modules-db amd64 2.1.27~101-g0780600+dfsg-3ubuntu2.3 [15.0 kB]
+Get:47 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libsasl2-2 amd64 2.1.27~101-g0780600+dfsg-3ubuntu2.3 [49.2 kB]
+Get:48 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libldap-common all 2.4.45+dfsg-1ubuntu1.10 [15.8 kB]
+Get:49 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libldap-2.4-2 amd64 2.4.45+dfsg-1ubuntu1.10 [154 kB]
+Get:50 http://archive.ubuntu.com/ubuntu bionic/main amd64 libnghttp2-14 amd64 1.30.0-1ubuntu1 [77.8 kB]
+Get:51 http://archive.ubuntu.com/ubuntu bionic/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-1 [54.2 kB]
+Get:52 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libcurl4 amd64 7.58.0-2ubuntu3.13 [219 kB]
+Get:53 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 curl amd64 7.58.0-2ubuntu3.13 [159 kB]
+Get:54 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libcc1-0 amd64 8.4.0-1ubuntu1~18.04 [39.4 kB]
+Get:55 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libgomp1 amd64 8.4.0-1ubuntu1~18.04 [76.5 kB]
+Get:56 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libitm1 amd64 8.4.0-1ubuntu1~18.04 [27.9 kB]
+Get:57 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libatomic1 amd64 8.4.0-1ubuntu1~18.04 [9192 B]
+Get:58 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libasan4 amd64 7.5.0-3ubuntu1~18.04 [358 kB]
+Get:59 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 liblsan0 amd64 8.4.0-1ubuntu1~18.04 [133 kB]
+Get:60 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libtsan0 amd64 8.4.0-1ubuntu1~18.04 [288 kB]
+Get:61 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libubsan0 amd64 7.5.0-3ubuntu1~18.04 [126 kB]
+Get:62 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libcilkrts5 amd64 7.5.0-3ubuntu1~18.04 [42.5 kB]
+Get:63 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libmpx2 amd64 8.4.0-1ubuntu1~18.04 [11.6 kB]
+Get:64 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libquadmath0 amd64 8.4.0-1ubuntu1~18.04 [134 kB]
+Get:65 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libgcc-7-dev amd64 7.5.0-3ubuntu1~18.04 [2378 kB]
+Get:66 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gcc-7 amd64 7.5.0-3ubuntu1~18.04 [9381 kB]
+Get:67 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gcc amd64 4:7.4.0-1ubuntu2.3 [5184 B]
+Get:68 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libc-dev-bin amd64 2.27-3ubuntu1.4 [71.8 kB]
+Get:69 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 linux-libc-dev amd64 4.15.0-140.144 [993 kB]
+Get:70 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libc6-dev amd64 2.27-3ubuntu1.4 [2585 kB]
+Get:71 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libstdc++-7-dev amd64 7.5.0-3ubuntu1~18.04 [1471 kB]
+Get:72 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 g++-7 amd64 7.5.0-3ubuntu1~18.04 [9697 kB]
+Get:73 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 g++ amd64 4:7.4.0-1ubuntu2.3 [1568 B]
+Get:74 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libcurl3-gnutls amd64 7.58.0-2ubuntu3.13 [218 kB]
+Get:75 http://archive.ubuntu.com/ubuntu bionic/main amd64 liberror-perl all 0.17025-1 [22.8 kB]
+Get:76 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 git-man all 1:2.17.1-1ubuntu0.8 [804 kB]
+Get:77 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 git amd64 1:2.17.1-1ubuntu0.8 [3916 kB]
+Get:78 http://archive.ubuntu.com/ubuntu bionic/main amd64 make amd64 4.1-9.1ubuntu1 [154 kB]
+Get:79 http://archive.ubuntu.com/ubuntu bionic/main amd64 zip amd64 3.0-11build1 [167 kB]
+<b style="color:#ff5555;">debconf: delaying package configuration, since apt-utils is not installed
+</b>Fetched 60.6 MB in 7s (8579 kB/s)
+Selecting previously unselected package perl-modules-5.26.
+(Reading database ...
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 4045 files and directories currently installed.)
+Preparing to unpack .../00-perl-modules-5.26_5.26.1-6ubuntu0.5_all.deb ...
+Unpacking perl-modules-5.26 (5.26.1-6ubuntu0.5) ...
+Selecting previously unselected package libgdbm5:amd64.
+Preparing to unpack .../01-libgdbm5_1.14.1-6_amd64.deb ...
+Unpacking libgdbm5:amd64 (1.14.1-6) ...
+Selecting previously unselected package libgdbm-compat4:amd64.
+Preparing to unpack .../02-libgdbm-compat4_1.14.1-6_amd64.deb ...
+Unpacking libgdbm-compat4:amd64 (1.14.1-6) ...
+Selecting previously unselected package libperl5.26:amd64.
+Preparing to unpack .../03-libperl5.26_5.26.1-6ubuntu0.5_amd64.deb ...
+Unpacking libperl5.26:amd64 (5.26.1-6ubuntu0.5) ...
+Selecting previously unselected package perl.
+Preparing to unpack .../04-perl_5.26.1-6ubuntu0.5_amd64.deb ...
+Unpacking perl (5.26.1-6ubuntu0.5) ...
+Selecting previously unselected package libpython2.7-minimal:amd64.
+Preparing to unpack .../05-libpython2.7-minimal_2.7.17-1~18.04ubuntu1.6_amd64.deb ...
+Unpacking libpython2.7-minimal:amd64 (2.7.17-1~18.04ubuntu1.6) ...
+Selecting previously unselected package python2.7-minimal.
+Preparing to unpack .../06-python2.7-minimal_2.7.17-1~18.04ubuntu1.6_amd64.deb ...
+Unpacking python2.7-minimal (2.7.17-1~18.04ubuntu1.6) ...
+Selecting previously unselected package python-minimal.
+Preparing to unpack .../07-python-minimal_2.7.15~rc1-1_amd64.deb ...
+Unpacking python-minimal (2.7.15~rc1-1) ...
+Selecting previously unselected package libssl1.1:amd64.
+Preparing to unpack .../08-libssl1.1_1.1.1-1ubuntu2.1~18.04.9_amd64.deb ...
+Unpacking libssl1.1:amd64 (1.1.1-1ubuntu2.1~18.04.9) ...
+Selecting previously unselected package mime-support.
+Preparing to unpack .../09-mime-support_3.60ubuntu1_all.deb ...
+Unpacking mime-support (3.60ubuntu1) ...
+Selecting previously unselected package libexpat1:amd64.
+Preparing to unpack .../10-libexpat1_2.2.5-3ubuntu0.2_amd64.deb ...
+Unpacking libexpat1:amd64 (2.2.5-3ubuntu0.2) ...
+Selecting previously unselected package readline-common.
+Preparing to unpack .../11-readline-common_7.0-3_all.deb ...
+Unpacking readline-common (7.0-3) ...
+Selecting previously unselected package libreadline7:amd64.
+Preparing to unpack .../12-libreadline7_7.0-3_amd64.deb ...
+Unpacking libreadline7:amd64 (7.0-3) ...
+Selecting previously unselected package libsqlite3-0:amd64.
+Preparing to unpack .../13-libsqlite3-0_3.22.0-1ubuntu0.4_amd64.deb ...
+Unpacking libsqlite3-0:amd64 (3.22.0-1ubuntu0.4) ...
+Selecting previously unselected package libpython2.7-stdlib:amd64.
+Preparing to unpack .../14-libpython2.7-stdlib_2.7.17-1~18.04ubuntu1.6_amd64.deb ...
+Unpacking libpython2.7-stdlib:amd64 (2.7.17-1~18.04ubuntu1.6) ...
+Selecting previously unselected package python2.7.
+Preparing to unpack .../15-python2.7_2.7.17-1~18.04ubuntu1.6_amd64.deb ...
+Unpacking python2.7 (2.7.17-1~18.04ubuntu1.6) ...
+Selecting previously unselected package libpython-stdlib:amd64.
+Preparing to unpack .../16-libpython-stdlib_2.7.15~rc1-1_amd64.deb ...
+Unpacking libpython-stdlib:amd64 (2.7.15~rc1-1) ...
+Setting up libpython2.7-minimal:amd64 (2.7.17-1~18.04ubuntu1.6) ...
+Setting up python2.7-minimal (2.7.17-1~18.04ubuntu1.6) ...
+Setting up python-minimal (2.7.15~rc1-1) ...
+Selecting previously unselected package python.
+(Reading database ...
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 6778 files and directories currently installed.)
+Preparing to unpack .../00-python_2.7.15~rc1-1_amd64.deb ...
+Unpacking python (2.7.15~rc1-1) ...
+Selecting previously unselected package openssl.
+Preparing to unpack .../01-openssl_1.1.1-1ubuntu2.1~18.04.9_amd64.deb ...
+Unpacking openssl (1.1.1-1ubuntu2.1~18.04.9) ...
+Selecting previously unselected package ca-certificates.
+Preparing to unpack .../02-ca-certificates_20210119~18.04.1_all.deb ...
+Unpacking ca-certificates (20210119~18.04.1) ...
+Selecting previously unselected package libkrb5support0:amd64.
+Preparing to unpack .../03-libkrb5support0_1.16-2ubuntu0.2_amd64.deb ...
+Unpacking libkrb5support0:amd64 (1.16-2ubuntu0.2) ...
+Selecting previously unselected package libk5crypto3:amd64.
+Preparing to unpack .../04-libk5crypto3_1.16-2ubuntu0.2_amd64.deb ...
+Unpacking libk5crypto3:amd64 (1.16-2ubuntu0.2) ...
+Selecting previously unselected package libkeyutils1:amd64.
+Preparing to unpack .../05-libkeyutils1_1.5.9-9.2ubuntu2_amd64.deb ...
+Unpacking libkeyutils1:amd64 (1.5.9-9.2ubuntu2) ...
+Selecting previously unselected package libkrb5-3:amd64.
+Preparing to unpack .../06-libkrb5-3_1.16-2ubuntu0.2_amd64.deb ...
+Unpacking libkrb5-3:amd64 (1.16-2ubuntu0.2) ...
+Selecting previously unselected package libgssapi-krb5-2:amd64.
+Preparing to unpack .../07-libgssapi-krb5-2_1.16-2ubuntu0.2_amd64.deb ...
+Unpacking libgssapi-krb5-2:amd64 (1.16-2ubuntu0.2) ...
+Selecting previously unselected package libpsl5:amd64.
+Preparing to unpack .../08-libpsl5_0.19.1-5build1_amd64.deb ...
+Unpacking libpsl5:amd64 (0.19.1-5build1) ...
+Selecting previously unselected package binutils-common:amd64.
+Preparing to unpack .../09-binutils-common_2.30-21ubuntu1~18.04.5_amd64.deb ...
+Unpacking binutils-common:amd64 (2.30-21ubuntu1~18.04.5) ...
+Selecting previously unselected package libbinutils:amd64.
+Preparing to unpack .../10-libbinutils_2.30-21ubuntu1~18.04.5_amd64.deb ...
+Unpacking libbinutils:amd64 (2.30-21ubuntu1~18.04.5) ...
+Selecting previously unselected package binutils-x86-64-linux-gnu.
+Preparing to unpack .../11-binutils-x86-64-linux-gnu_2.30-21ubuntu1~18.04.5_amd64.deb ...
+Unpacking binutils-x86-64-linux-gnu (2.30-21ubuntu1~18.04.5) ...
+Selecting previously unselected package binutils.
+Preparing to unpack .../12-binutils_2.30-21ubuntu1~18.04.5_amd64.deb ...
+Unpacking binutils (2.30-21ubuntu1~18.04.5) ...
+Selecting previously unselected package gcc-7-base:amd64.
+Preparing to unpack .../13-gcc-7-base_7.5.0-3ubuntu1~18.04_amd64.deb ...
+Unpacking gcc-7-base:amd64 (7.5.0-3ubuntu1~18.04) ...
+Selecting previously unselected package libisl19:amd64.
+Preparing to unpack .../14-libisl19_0.19-1_amd64.deb ...
+Unpacking libisl19:amd64 (0.19-1) ...
+Selecting previously unselected package libmpfr6:amd64.
+Preparing to unpack .../15-libmpfr6_4.0.1-1_amd64.deb ...
+Unpacking libmpfr6:amd64 (4.0.1-1) ...
+Selecting previously unselected package libmpc3:amd64.
+Preparing to unpack .../16-libmpc3_1.1.0-1_amd64.deb ...
+Unpacking libmpc3:amd64 (1.1.0-1) ...
+Selecting previously unselected package cpp-7.
+Preparing to unpack .../17-cpp-7_7.5.0-3ubuntu1~18.04_amd64.deb ...
+Unpacking cpp-7 (7.5.0-3ubuntu1~18.04) ...
+Selecting previously unselected package cpp.
+Preparing to unpack .../18-cpp_4%3a7.4.0-1ubuntu2.3_amd64.deb ...
+Unpacking cpp (4:7.4.0-1ubuntu2.3) ...
+Selecting previously unselected package libroken18-heimdal:amd64.
+Preparing to unpack .../19-libroken18-heimdal_7.5.0+dfsg-1_amd64.deb ...
+Unpacking libroken18-heimdal:amd64 (7.5.0+dfsg-1) ...
+Selecting previously unselected package libasn1-8-heimdal:amd64.
+Preparing to unpack .../20-libasn1-8-heimdal_7.5.0+dfsg-1_amd64.deb ...
+Unpacking libasn1-8-heimdal:amd64 (7.5.0+dfsg-1) ...
+Selecting previously unselected package libheimbase1-heimdal:amd64.
+Preparing to unpack .../21-libheimbase1-heimdal_7.5.0+dfsg-1_amd64.deb ...
+Unpacking libheimbase1-heimdal:amd64 (7.5.0+dfsg-1) ...
+Selecting previously unselected package libhcrypto4-heimdal:amd64.
+Preparing to unpack .../22-libhcrypto4-heimdal_7.5.0+dfsg-1_amd64.deb ...
+Unpacking libhcrypto4-heimdal:amd64 (7.5.0+dfsg-1) ...
+Selecting previously unselected package libwind0-heimdal:amd64.
+Preparing to unpack .../23-libwind0-heimdal_7.5.0+dfsg-1_amd64.deb ...
+Unpacking libwind0-heimdal:amd64 (7.5.0+dfsg-1) ...
+Selecting previously unselected package libhx509-5-heimdal:amd64.
+Preparing to unpack .../24-libhx509-5-heimdal_7.5.0+dfsg-1_amd64.deb ...
+Unpacking libhx509-5-heimdal:amd64 (7.5.0+dfsg-1) ...
+Selecting previously unselected package libkrb5-26-heimdal:amd64.
+Preparing to unpack .../25-libkrb5-26-heimdal_7.5.0+dfsg-1_amd64.deb ...
+Unpacking libkrb5-26-heimdal:amd64 (7.5.0+dfsg-1) ...
+Selecting previously unselected package libheimntlm0-heimdal:amd64.
+Preparing to unpack .../26-libheimntlm0-heimdal_7.5.0+dfsg-1_amd64.deb ...
+Unpacking libheimntlm0-heimdal:amd64 (7.5.0+dfsg-1) ...
+Selecting previously unselected package libgssapi3-heimdal:amd64.
+Preparing to unpack .../27-libgssapi3-heimdal_7.5.0+dfsg-1_amd64.deb ...
+Unpacking libgssapi3-heimdal:amd64 (7.5.0+dfsg-1) ...
+Selecting previously unselected package libsasl2-modules-db:amd64.
+Preparing to unpack .../28-libsasl2-modules-db_2.1.27~101-g0780600+dfsg-3ubuntu2.3_amd64.deb ...
+Unpacking libsasl2-modules-db:amd64 (2.1.27~101-g0780600+dfsg-3ubuntu2.3) ...
+Selecting previously unselected package libsasl2-2:amd64.
+Preparing to unpack .../29-libsasl2-2_2.1.27~101-g0780600+dfsg-3ubuntu2.3_amd64.deb ...
+Unpacking libsasl2-2:amd64 (2.1.27~101-g0780600+dfsg-3ubuntu2.3) ...
+Selecting previously unselected package libldap-common.
+Preparing to unpack .../30-libldap-common_2.4.45+dfsg-1ubuntu1.10_all.deb ...
+Unpacking libldap-common (2.4.45+dfsg-1ubuntu1.10) ...
+Selecting previously unselected package libldap-2.4-2:amd64.
+Preparing to unpack .../31-libldap-2.4-2_2.4.45+dfsg-1ubuntu1.10_amd64.deb ...
+Unpacking libldap-2.4-2:amd64 (2.4.45+dfsg-1ubuntu1.10) ...
+Selecting previously unselected package libnghttp2-14:amd64.
+Preparing to unpack .../32-libnghttp2-14_1.30.0-1ubuntu1_amd64.deb ...
+Unpacking libnghttp2-14:amd64 (1.30.0-1ubuntu1) ...
+Selecting previously unselected package librtmp1:amd64.
+Preparing to unpack .../33-librtmp1_2.4+20151223.gitfa8646d.1-1_amd64.deb ...
+Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-1) ...
+Selecting previously unselected package libcurl4:amd64.
+Preparing to unpack .../34-libcurl4_7.58.0-2ubuntu3.13_amd64.deb ...
+Unpacking libcurl4:amd64 (7.58.0-2ubuntu3.13) ...
+Selecting previously unselected package curl.
+Preparing to unpack .../35-curl_7.58.0-2ubuntu3.13_amd64.deb ...
+Unpacking curl (7.58.0-2ubuntu3.13) ...
+Selecting previously unselected package libcc1-0:amd64.
+Preparing to unpack .../36-libcc1-0_8.4.0-1ubuntu1~18.04_amd64.deb ...
+Unpacking libcc1-0:amd64 (8.4.0-1ubuntu1~18.04) ...
+Selecting previously unselected package libgomp1:amd64.
+Preparing to unpack .../37-libgomp1_8.4.0-1ubuntu1~18.04_amd64.deb ...
+Unpacking libgomp1:amd64 (8.4.0-1ubuntu1~18.04) ...
+Selecting previously unselected package libitm1:amd64.
+Preparing to unpack .../38-libitm1_8.4.0-1ubuntu1~18.04_amd64.deb ...
+Unpacking libitm1:amd64 (8.4.0-1ubuntu1~18.04) ...
+Selecting previously unselected package libatomic1:amd64.
+Preparing to unpack .../39-libatomic1_8.4.0-1ubuntu1~18.04_amd64.deb ...
+Unpacking libatomic1:amd64 (8.4.0-1ubuntu1~18.04) ...
+Selecting previously unselected package libasan4:amd64.
+Preparing to unpack .../40-libasan4_7.5.0-3ubuntu1~18.04_amd64.deb ...
+Unpacking libasan4:amd64 (7.5.0-3ubuntu1~18.04) ...
+Selecting previously unselected package liblsan0:amd64.
+Preparing to unpack .../41-liblsan0_8.4.0-1ubuntu1~18.04_amd64.deb ...
+Unpacking liblsan0:amd64 (8.4.0-1ubuntu1~18.04) ...
+Selecting previously unselected package libtsan0:amd64.
+Preparing to unpack .../42-libtsan0_8.4.0-1ubuntu1~18.04_amd64.deb ...
+Unpacking libtsan0:amd64 (8.4.0-1ubuntu1~18.04) ...
+Selecting previously unselected package libubsan0:amd64.
+Preparing to unpack .../43-libubsan0_7.5.0-3ubuntu1~18.04_amd64.deb ...
+Unpacking libubsan0:amd64 (7.5.0-3ubuntu1~18.04) ...
+Selecting previously unselected package libcilkrts5:amd64.
+Preparing to unpack .../44-libcilkrts5_7.5.0-3ubuntu1~18.04_amd64.deb ...
+Unpacking libcilkrts5:amd64 (7.5.0-3ubuntu1~18.04) ...
+Selecting previously unselected package libmpx2:amd64.
+Preparing to unpack .../45-libmpx2_8.4.0-1ubuntu1~18.04_amd64.deb ...
+Unpacking libmpx2:amd64 (8.4.0-1ubuntu1~18.04) ...
+Selecting previously unselected package libquadmath0:amd64.
+Preparing to unpack .../46-libquadmath0_8.4.0-1ubuntu1~18.04_amd64.deb ...
+Unpacking libquadmath0:amd64 (8.4.0-1ubuntu1~18.04) ...
+Selecting previously unselected package libgcc-7-dev:amd64.
+Preparing to unpack .../47-libgcc-7-dev_7.5.0-3ubuntu1~18.04_amd64.deb ...
+Unpacking libgcc-7-dev:amd64 (7.5.0-3ubuntu1~18.04) ...
+Selecting previously unselected package gcc-7.
+Preparing to unpack .../48-gcc-7_7.5.0-3ubuntu1~18.04_amd64.deb ...
+Unpacking gcc-7 (7.5.0-3ubuntu1~18.04) ...
+Selecting previously unselected package gcc.
+Preparing to unpack .../49-gcc_4%3a7.4.0-1ubuntu2.3_amd64.deb ...
+Unpacking gcc (4:7.4.0-1ubuntu2.3) ...
+Selecting previously unselected package libc-dev-bin.
+Preparing to unpack .../50-libc-dev-bin_2.27-3ubuntu1.4_amd64.deb ...
+Unpacking libc-dev-bin (2.27-3ubuntu1.4) ...
+Selecting previously unselected package linux-libc-dev:amd64.
+Preparing to unpack .../51-linux-libc-dev_4.15.0-140.144_amd64.deb ...
+Unpacking linux-libc-dev:amd64 (4.15.0-140.144) ...
+Selecting previously unselected package libc6-dev:amd64.
+Preparing to unpack .../52-libc6-dev_2.27-3ubuntu1.4_amd64.deb ...
+Unpacking libc6-dev:amd64 (2.27-3ubuntu1.4) ...
+Selecting previously unselected package libstdc++-7-dev:amd64.
+Preparing to unpack .../53-libstdc++-7-dev_7.5.0-3ubuntu1~18.04_amd64.deb ...
+Unpacking libstdc++-7-dev:amd64 (7.5.0-3ubuntu1~18.04) ...
+Selecting previously unselected package g++-7.
+Preparing to unpack .../54-g++-7_7.5.0-3ubuntu1~18.04_amd64.deb ...
+Unpacking g++-7 (7.5.0-3ubuntu1~18.04) ...
+Selecting previously unselected package g++.
+Preparing to unpack .../55-g++_4%3a7.4.0-1ubuntu2.3_amd64.deb ...
+Unpacking g++ (4:7.4.0-1ubuntu2.3) ...
+Selecting previously unselected package libcurl3-gnutls:amd64.
+Preparing to unpack .../56-libcurl3-gnutls_7.58.0-2ubuntu3.13_amd64.deb ...
+Unpacking libcurl3-gnutls:amd64 (7.58.0-2ubuntu3.13) ...
+Selecting previously unselected package liberror-perl.
+Preparing to unpack .../57-liberror-perl_0.17025-1_all.deb ...
+Unpacking liberror-perl (0.17025-1) ...
+Selecting previously unselected package git-man.
+Preparing to unpack .../58-git-man_1%3a2.17.1-1ubuntu0.8_all.deb ...
+Unpacking git-man (1:2.17.1-1ubuntu0.8) ...
+Selecting previously unselected package git.
+Preparing to unpack .../59-git_1%3a2.17.1-1ubuntu0.8_amd64.deb ...
+Unpacking git (1:2.17.1-1ubuntu0.8) ...
+Selecting previously unselected package make.
+Preparing to unpack .../60-make_4.1-9.1ubuntu1_amd64.deb ...
+Unpacking make (4.1-9.1ubuntu1) ...
+Selecting previously unselected package zip.
+Preparing to unpack .../61-zip_3.0-11build1_amd64.deb ...
+Unpacking zip (3.0-11build1) ...
+Setting up libquadmath0:amd64 (8.4.0-1ubuntu1~18.04) ...
+Setting up libgomp1:amd64 (8.4.0-1ubuntu1~18.04) ...
+Setting up libatomic1:amd64 (8.4.0-1ubuntu1~18.04) ...
+Setting up readline-common (7.0-3) ...
+Setting up git-man (1:2.17.1-1ubuntu0.8) ...
+Setting up libexpat1:amd64 (2.2.5-3ubuntu0.2) ...
+Setting up libcc1-0:amd64 (8.4.0-1ubuntu1~18.04) ...
+Setting up make (4.1-9.1ubuntu1) ...
+Setting up libnghttp2-14:amd64 (1.30.0-1ubuntu1) ...
+Setting up mime-support (3.60ubuntu1) ...
+Setting up libldap-common (2.4.45+dfsg-1ubuntu1.10) ...
+Setting up libreadline7:amd64 (7.0-3) ...
+Setting up libpsl5:amd64 (0.19.1-5build1) ...
+Setting up libtsan0:amd64 (8.4.0-1ubuntu1~18.04) ...
+Setting up libsasl2-modules-db:amd64 (2.1.27~101-g0780600+dfsg-3ubuntu2.3) ...
+Setting up linux-libc-dev:amd64 (4.15.0-140.144) ...
+Setting up libmpfr6:amd64 (4.0.1-1) ...
+Setting up libsasl2-2:amd64 (2.1.27~101-g0780600+dfsg-3ubuntu2.3) ...
+Setting up libroken18-heimdal:amd64 (7.5.0+dfsg-1) ...
+Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-1) ...
+Setting up perl-modules-5.26 (5.26.1-6ubuntu0.5) ...
+Setting up libgdbm5:amd64 (1.14.1-6) ...
+Setting up libkrb5support0:amd64 (1.16-2ubuntu0.2) ...
+Setting up zip (3.0-11build1) ...
+Setting up liblsan0:amd64 (8.4.0-1ubuntu1~18.04) ...
+Setting up gcc-7-base:amd64 (7.5.0-3ubuntu1~18.04) ...
+Setting up binutils-common:amd64 (2.30-21ubuntu1~18.04.5) ...
+Setting up libmpx2:amd64 (8.4.0-1ubuntu1~18.04) ...
+Setting up libssl1.1:amd64 (1.1.1-1ubuntu2.1~18.04.9) ...
+Setting up libheimbase1-heimdal:amd64 (7.5.0+dfsg-1) ...
+Setting up openssl (1.1.1-1ubuntu2.1~18.04.9) ...
+Setting up libsqlite3-0:amd64 (3.22.0-1ubuntu0.4) ...
+Setting up libmpc3:amd64 (1.1.0-1) ...
+Setting up libc-dev-bin (2.27-3ubuntu1.4) ...
+Setting up libgdbm-compat4:amd64 (1.14.1-6) ...
+Setting up libkeyutils1:amd64 (1.5.9-9.2ubuntu2) ...
+Setting up ca-certificates (20210119~18.04.1) ...
+Updating certificates in /etc/ssl/certs...
+129 added, 0 removed; done.
+Setting up libc6-dev:amd64 (2.27-3ubuntu1.4) ...
+Setting up libitm1:amd64 (8.4.0-1ubuntu1~18.04) ...
+Setting up libpython2.7-stdlib:amd64 (2.7.17-1~18.04ubuntu1.6) ...
+Setting up libisl19:amd64 (0.19-1) ...
+Setting up libk5crypto3:amd64 (1.16-2ubuntu0.2) ...
+Setting up libwind0-heimdal:amd64 (7.5.0+dfsg-1) ...
+Setting up libasan4:amd64 (7.5.0-3ubuntu1~18.04) ...
+Setting up libbinutils:amd64 (2.30-21ubuntu1~18.04.5) ...
+Setting up libcilkrts5:amd64 (7.5.0-3ubuntu1~18.04) ...
+Setting up libasn1-8-heimdal:amd64 (7.5.0+dfsg-1) ...
+Setting up libubsan0:amd64 (7.5.0-3ubuntu1~18.04) ...
+Setting up libhcrypto4-heimdal:amd64 (7.5.0+dfsg-1) ...
+Setting up python2.7 (2.7.17-1~18.04ubuntu1.6) ...
+Setting up libhx509-5-heimdal:amd64 (7.5.0+dfsg-1) ...
+Setting up libgcc-7-dev:amd64 (7.5.0-3ubuntu1~18.04) ...
+Setting up cpp-7 (7.5.0-3ubuntu1~18.04) ...
+Setting up libstdc++-7-dev:amd64 (7.5.0-3ubuntu1~18.04) ...
+Setting up libpython-stdlib:amd64 (2.7.15~rc1-1) ...
+Setting up libperl5.26:amd64 (5.26.1-6ubuntu0.5) ...
+Setting up libkrb5-3:amd64 (1.16-2ubuntu0.2) ...
+Setting up libkrb5-26-heimdal:amd64 (7.5.0+dfsg-1) ...
+Setting up libheimntlm0-heimdal:amd64 (7.5.0+dfsg-1) ...
+Setting up python (2.7.15~rc1-1) ...
+Setting up binutils-x86-64-linux-gnu (2.30-21ubuntu1~18.04.5) ...
+Setting up cpp (4:7.4.0-1ubuntu2.3) ...
+Setting up libgssapi-krb5-2:amd64 (1.16-2ubuntu0.2) ...
+Setting up perl (5.26.1-6ubuntu0.5) ...
+Setting up binutils (2.30-21ubuntu1~18.04.5) ...
+Setting up libgssapi3-heimdal:amd64 (7.5.0+dfsg-1) ...
+Setting up gcc-7 (7.5.0-3ubuntu1~18.04) ...
+Setting up liberror-perl (0.17025-1) ...
+Setting up g++-7 (7.5.0-3ubuntu1~18.04) ...
+Setting up gcc (4:7.4.0-1ubuntu2.3) ...
+Setting up libldap-2.4-2:amd64 (2.4.45+dfsg-1ubuntu1.10) ...
+Setting up g++ (4:7.4.0-1ubuntu2.3) ...
+update-alternatives: using /usr/bin/g++ to provide /usr/bin/c++ (c++) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/c++.1.gz because associated file /usr/share/man/man1/g++.1.gz (of link group c++) doesn't exist
+Setting up libcurl3-gnutls:amd64 (7.58.0-2ubuntu3.13) ...
+Setting up libcurl4:amd64 (7.58.0-2ubuntu3.13) ...
+Setting up git (1:2.17.1-1ubuntu0.8) ...
+Setting up curl (7.58.0-2ubuntu3.13) ...
+Processing triggers for libc-bin (2.27-3ubuntu1.4) ...
+Processing triggers for ca-certificates (20210119~18.04.1) ...
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+
+## Installing the NodeSource Node.js 14.x repo...
+
+
+## Populating apt-get cache...
+
++ apt-get update
+Hit:1 http://archive.ubuntu.com/ubuntu bionic InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu bionic-updates InRelease
+Hit:3 http://security.ubuntu.com/ubuntu bionic-security InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu bionic-backports InRelease
+Reading package lists...
+
+## Installing packages required for setup: lsb-release gnupg...
+
++ apt-get install -y lsb-release gnupg &gt; /dev/null 2&gt;&amp;1
+
+## Confirming "bionic" is supported...
+
++ curl -sLf -o /dev/null 'https://deb.nodesource.com/node_14.x/dists/bionic/Release'
+
+## Adding the NodeSource signing key to your keyring...
+
++ curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | tee /usr/share/keyrings/nodesource.gpg &gt;/dev/null
+
+## Creating apt sources list file for the NodeSource Node.js 14.x repo...
+
++ echo 'deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_14.x bionic main' &gt; /etc/apt/sources.list.d/nodesource.list
++ echo 'deb-src [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_14.x bionic main' &gt;&gt; /etc/apt/sources.list.d/nodesource.list
+
+## Running `apt-get update` for you...
+
++ apt-get update
+Get:1 https://deb.nodesource.com/node_14.x bionic InRelease [4584 B]
+Hit:2 http://archive.ubuntu.com/ubuntu bionic InRelease
+Hit:3 http://security.ubuntu.com/ubuntu bionic-security InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu bionic-updates InRelease
+Hit:5 http://archive.ubuntu.com/ubuntu bionic-backports InRelease
+Get:6 https://deb.nodesource.com/node_14.x bionic/main amd64 Packages [767 B]
+Fetched 5351 B in 1s (5976 B/s)
+Reading package lists...
+
+## Run `sudo apt-get install -y nodejs` to install Node.js 14.x and npm
+## You may also need development tools to build native addons:
+     sudo apt-get install gcc g++ make
+## To install the Yarn package manager, run:
+     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg &gt;/dev/null
+     echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+     sudo apt-get update &amp;&amp; sudo apt-get install yarn
+
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  nodejs
+0 upgraded, 1 newly installed, 0 to remove and 3 not upgraded.
+Need to get 24.7 MB of archives.
+After this operation, 119 MB of additional disk space will be used.
+Get:1 https://deb.nodesource.com/node_14.x bionic/main amd64 nodejs amd64 14.16.1-1nodesource1 [24.7 MB]
+<b style="color:#ff5555;">debconf: delaying package configuration, since apt-utils is not installed
+</b>Fetched 24.7 MB in 2s (12.7 MB/s)
+Selecting previously unselected package nodejs.
+(Reading database ...
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 12035 files and directories currently installed.)
+Preparing to unpack .../nodejs_14.16.1-1nodesource1_amd64.deb ...
+Unpacking nodejs (14.16.1-1nodesource1) ...
+Setting up nodejs (14.16.1-1nodesource1) ...
+<b style="color:#ff5555;">Cloning into 'SGXDataCenterAttestationPrimitives'...
+</b><b style="color:#ff5555;">Note: checking out 'DCAP_1.10'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+  git checkout -b &lt;new-branch-name&gt;
+
+HEAD is now at 30fac05 Intel(R) SGX DCAP 1.10 Release
+</b>make: Entering directory '/root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib'
+Compiling pck_sorter.cpp...
+Compiling pck_cert_selection.cpp...
+Compiling config_selector.cpp...
+Compiling tcb_manager.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/ParserUtils.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/X509/Certificate.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/X509/DistinguishedName.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/X509/Extension.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/X509/PckCertificate.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/X509/Signature.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/X509/Validity.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/OpensslHelpers/OidUtils.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/Json/JsonParser.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/Json/TcbInfo.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/X509/Tcb.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationCommons/src/Utils/GMTime.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationParsers/src/Json/TcbLevel.cpp...
+Compiling /root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib/../../../QuoteVerification/QVL/Src/AttestationCommons/src/Utils/TimeUtils.cpp...
+	 -&gt; GMTime.o done
+	 -&gt; pck_cert_selection.o done
+	 -&gt; Validity.o done
+	 -&gt; config_selector.o done
+	 -&gt; DistinguishedName.o done
+	 -&gt; tcb_manager.o done
+	 -&gt; Extension.o done
+	 -&gt; TcbLevel.o done
+	 -&gt; Signature.o done
+	 -&gt; ParserUtils.o done
+	 -&gt; pck_sorter.o done
+	 -&gt; JsonParser.o done
+	 -&gt; OidUtils.o done
+	 -&gt; Tcb.o done
+	 -&gt; TcbInfo.o done
+	 -&gt; Certificate.o done
+	 -&gt; PckCertificate.o done
+	 -&gt; TimeUtils.o done
+Linking...
+Stripping...
+	 -&gt; libPCKCertSelection.so done
+make: Leaving directory '/root/SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/PCKCertSelectionLib'
+Removing intermediate container 985d6fe9a1e4
+ ---&gt; a6965417f59c
+Step 6/14 : WORKDIR /root/pccs
+ ---&gt; Running in 9364446a68e0
+Removing intermediate container 9364446a68e0
+ ---&gt; a8c8518ac741
+Step 7/14 : ARG CONFIG_FILE=./config/default.json
+ ---&gt; Running in 28201e45699a
+Removing intermediate container 28201e45699a
+ ---&gt; 8521f8ac43e0
+Step 8/14 : ARG HTTPS_PORT=8081
+ ---&gt; Running in 8a1b4ceb2057
+Removing intermediate container 8a1b4ceb2057
+ ---&gt; fac893757815
+Step 9/14 : ARG HOST=0.0.0.0
+ ---&gt; Running in 438bcf34dc18
+Removing intermediate container 438bcf34dc18
+ ---&gt; e4a1886fd43d
+Step 10/14 : ARG API_KEY
+ ---&gt; Running in c7b4dbe2b94c
+Removing intermediate container c7b4dbe2b94c
+ ---&gt; d66a60d1c446
+Step 11/14 : ARG ADMIN_TOKEN
+ ---&gt; Running in fe4e513a1923
+Removing intermediate container fe4e513a1923
+ ---&gt; ca31d03fbf28
+Step 12/14 : ARG USER_TOKEN
+ ---&gt; Running in dd3d6cdca614
+Removing intermediate container dd3d6cdca614
+ ---&gt; 5cca810c1bf9
+Step 13/14 : RUN test -n "${API_KEY}"     &amp;&amp; test -n "${ADMIN_TOKEN}"     &amp;&amp; test -n "${USER_TOKEN}"     &amp;&amp; npm install     &amp;&amp; npm config set engine-strict true     &amp;&amp; npm ci     &amp;&amp; npm cache clean --force     &amp;&amp; sed "/\"HTTPS_PORT\"*/c\ \ \ \ \"HTTPS_PORT\" \: ${HTTPS_PORT}," -i ${CONFIG_FILE}     &amp;&amp; sed "/\"hosts\"*/c\ \ \ \ \"hosts\" \: \"${HOST}\"," -i ${CONFIG_FILE}     &amp;&amp; sed "/\"ApiKey\"*/c\ \ \ \ \"ApiKey\" \: \"${API_KEY}\"," -i ${CONFIG_FILE}     &amp;&amp; sed "/\"AdminTokenHash\"*/c\ \ \ \ \"AdminTokenHash\" \: \"$(echo -n "${ADMIN_TOKEN}" | sha512sum | tr -d '[:space:]-')\"," -i ${CONFIG_FILE}     &amp;&amp; sed "/\"UserTokenHash\"*/c\ \ \ \ \"UserTokenHash\" \: \"$(echo -n "${USER_TOKEN}" | sha512sum | tr -d '[:space:]-')\"," -i ${CONFIG_FILE}     &amp;&amp; mkdir ssl_key     &amp;&amp; openssl genrsa -out ssl_key/private.pem 2048     &amp;&amp; openssl req -new -key ssl_key/private.pem -out ssl_key/csr.pem -subj "/CN=pccs.internal/"     &amp;&amp; openssl x509 -req -days 365 -in ssl_key/csr.pem -signkey ssl_key/private.pem -out ssl_key/file.crt     &amp;&amp; openssl x509 -in ssl_key/file.crt -noout -text
+ ---&gt; Running in 9ecfdb5fdc80
+
+&gt; ffi-napi@3.0.1 install /root/pccs/node_modules/ffi-napi
+&gt; node-gyp-build
+
+make: Entering directory '/root/pccs/node_modules/ffi-napi/build'
+  CC(target) Release/obj.target/nothing/../node-addon-api/src/nothing.o
+  AR(target) Release/obj.target/../node-addon-api/src/nothing.a
+  COPY Release/nothing.a
+  CC(target) Release/obj.target/ffi/deps/libffi/src/prep_cif.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/types.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/raw_api.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/java_raw_api.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/closures.o
+<b style="color:#ff5555;">../deps/libffi/src/closures.c: In function 'dlmmap_locked':
+../deps/libffi/src/closures.c:421:7: warning: ignoring return value of 'ftruncate', declared with attribute warn_unused_result [-Wunused-result]
+       ftruncate (execfd, offset);
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+../deps/libffi/src/closures.c:433:7: warning: ignoring return value of 'ftruncate', declared with attribute warn_unused_result [-Wunused-result]
+       ftruncate (execfd, offset);
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+</b>  CC(target) Release/obj.target/ffi/deps/libffi/src/x86/ffi.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/x86/ffi64.o
+<b style="color:#ff5555;">../deps/libffi/src/x86/ffi64.c: In function 'classify_argument':
+../deps/libffi/src/x86/ffi64.c:181:18: warning: suggest braces around empty body in an 'else' statement [-Wempty-body]
+    FFI_ASSERT (0);
+                  ^
+</b><b style="color:#ff5555;">../deps/libffi/src/x86/ffi64.c:156:7: warning: this statement may fall through [-Wimplicit-fallthrough=]
+       {
+       ^
+../deps/libffi/src/x86/ffi64.c:183:5: note: here
+     case FFI_TYPE_FLOAT:
+     ^~~~
+</b>  CC(target) Release/obj.target/ffi/deps/libffi/src/x86/unix64.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/x86/sysv.o
+  AR(target) Release/obj.target/deps/libffi/libffi.a
+  COPY Release/libffi.a
+  CXX(target) Release/obj.target/ffi_bindings/src/ffi.o
+<b style="color:#ff5555;">In file included from ../src/ffi.cc:3:0:
+../src/ffi.h:148:19: warning: mangled name for 'Napi::TypedArray FFI::WrapPointer(Napi::Env, T*, size_t) [with T = char*() throw ()]' will change in C++17 because the exception specification is part of a function type [-Wnoexcept-type]
+ inline TypedArray WrapPointer(Env env, T* ptr, size_t length = 0) {
+                   ^~~~~~~~~~~
+../src/ffi.h:148:19: warning: mangled name for 'Napi::TypedArray FFI::WrapPointer(Napi::Env, T*, size_t) [with T = void*(void*, const char*) throw ()]' will change in C++17 because the exception specification is part of a function type [-Wnoexcept-type]
+../src/ffi.h:148:19: warning: mangled name for 'Napi::TypedArray FFI::WrapPointer(Napi::Env, T*, size_t) [with T = int(void*) throw ()]' will change in C++17 because the exception specification is part of a function type [-Wnoexcept-type]
+../src/ffi.h:148:19: warning: mangled name for 'Napi::TypedArray FFI::WrapPointer(Napi::Env, T*, size_t) [with T = void*(const char*, int) throw ()]' will change in C++17 because the exception specification is part of a function type [-Wnoexcept-type]
+</b>  CXX(target) Release/obj.target/ffi_bindings/src/callback_info.o
+  CXX(target) Release/obj.target/ffi_bindings/src/threaded_callback_invokation.o
+  SOLINK_MODULE(target) Release/obj.target/ffi_bindings.node
+  COPY Release/ffi_bindings.node
+make: Leaving directory '/root/pccs/node_modules/ffi-napi/build'
+
+&gt; ref-napi@3.0.1 install /root/pccs/node_modules/ref-napi
+&gt; node-gyp-build
+
+
+&gt; sqlite3@5.0.0 install /root/pccs/node_modules/sqlite3
+&gt; node-pre-gyp install --fallback-to-build
+
+<b style="color:#ff5555;">node-pre-gyp</b><b style="color:#ff5555;"> </b><b style="color:#ff5555;">WARN </b><b style="color:#ff5555;">Using request for node-pre-gyp https download</b><b style="color:#ff5555;">
+</b>[sqlite3] Success: "/root/pccs/node_modules/sqlite3/lib/binding/napi-v3-linux-x64/node_sqlite3.node" is installed via remote
+<b style="color:#ff5555;">npm WARN PCCS@1.10.0 No repository field.
+</b><b style="color:#ff5555;">npm WARN PCCS@1.10.0 No license field.
+</b><b style="color:#ff5555;">
+</b>added 312 packages from 333 contributors and audited 312 packages in 15.641s
+
+8 packages are looking for funding
+  run `npm fund` for details
+
+found 3 low severity vulnerabilities
+  run `npm audit fix` to fix them, or `npm audit` for details
+<b style="color:#ff5555;">npm</b><b style="color:#ff5555;"> WARN prepare removing existing node_modules/ before installation
+</b>
+&gt; sqlite3@5.0.0 install /root/pccs/node_modules/sqlite3
+&gt; node-pre-gyp install --fallback-to-build
+
+<b style="color:#ff5555;">node-pre-gyp</b><b style="color:#ff5555;"> WARN</b><b style="color:#ff5555;"> </b><b style="color:#ff5555;">Using request for node-pre-gyp https download</b><b style="color:#ff5555;">
+</b>[sqlite3] Success: "/root/pccs/node_modules/sqlite3/lib/binding/napi-v3-linux-x64/node_sqlite3.node" is installed via remote
+
+&gt; ref-napi@3.0.1 install /root/pccs/node_modules/ref-napi
+&gt; node-gyp-build
+
+
+&gt; ffi-napi@3.0.1 install /root/pccs/node_modules/ffi-napi
+&gt; node-gyp-build
+
+make: Entering directory '/root/pccs/node_modules/ffi-napi/build'
+  CC(target) Release/obj.target/nothing/../node-addon-api/src/nothing.o
+  AR(target) Release/obj.target/../node-addon-api/src/nothing.a
+  COPY Release/nothing.a
+  CC(target) Release/obj.target/ffi/deps/libffi/src/prep_cif.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/types.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/raw_api.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/java_raw_api.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/closures.o
+<b style="color:#ff5555;">../deps/libffi/src/closures.c: In function 'dlmmap_locked':
+../deps/libffi/src/closures.c:421:7: warning: ignoring return value of 'ftruncate', declared with attribute warn_unused_result [-Wunused-result]
+       ftruncate (execfd, offset);
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+../deps/libffi/src/closures.c:433:7: warning: ignoring return value of 'ftruncate', declared with attribute warn_unused_result [-Wunused-result]
+       ftruncate (execfd, offset);
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+</b>  CC(target) Release/obj.target/ffi/deps/libffi/src/x86/ffi.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/x86/ffi64.o
+<b style="color:#ff5555;">../deps/libffi/src/x86/ffi64.c: In function 'classify_argument':
+../deps/libffi/src/x86/ffi64.c:181:18: warning: suggest braces around empty body in an 'else' statement [-Wempty-body]
+    FFI_ASSERT (0);
+                  ^
+</b><b style="color:#ff5555;">../deps/libffi/src/x86/ffi64.c:156:7: warning: this statement may fall through [-Wimplicit-fallthrough=]
+       {
+       ^
+../deps/libffi/src/x86/ffi64.c:183:5: note: here
+     case FFI_TYPE_FLOAT:
+     ^~~~
+</b>  CC(target) Release/obj.target/ffi/deps/libffi/src/x86/unix64.o
+  CC(target) Release/obj.target/ffi/deps/libffi/src/x86/sysv.o
+  AR(target) Release/obj.target/deps/libffi/libffi.a
+  COPY Release/libffi.a
+  CXX(target) Release/obj.target/ffi_bindings/src/ffi.o
+<b style="color:#ff5555;">In file included from ../src/ffi.cc:3:0:
+../src/ffi.h:148:19: warning: mangled name for 'Napi::TypedArray FFI::WrapPointer(Napi::Env, T*, size_t) [with T = char*() throw ()]' will change in C++17 because the exception specification is part of a function type [-Wnoexcept-type]
+ inline TypedArray WrapPointer(Env env, T* ptr, size_t length = 0) {
+                   ^~~~~~~~~~~
+../src/ffi.h:148:19: warning: mangled name for 'Napi::TypedArray FFI::WrapPointer(Napi::Env, T*, size_t) [with T = void*(void*, const char*) throw ()]' will change in C++17 because the exception specification is part of a function type [-Wnoexcept-type]
+../src/ffi.h:148:19: warning: mangled name for 'Napi::TypedArray FFI::WrapPointer(Napi::Env, T*, size_t) [with T = int(void*) throw ()]' will change in C++17 because the exception specification is part of a function type [-Wnoexcept-type]
+../src/ffi.h:148:19: warning: mangled name for 'Napi::TypedArray FFI::WrapPointer(Napi::Env, T*, size_t) [with T = void*(const char*, int) throw ()]' will change in C++17 because the exception specification is part of a function type [-Wnoexcept-type]
+</b>  CXX(target) Release/obj.target/ffi_bindings/src/callback_info.o
+  CXX(target) Release/obj.target/ffi_bindings/src/threaded_callback_invokation.o
+  SOLINK_MODULE(target) Release/obj.target/ffi_bindings.node
+  COPY Release/ffi_bindings.node
+make: Leaving directory '/root/pccs/node_modules/ffi-napi/build'
+added 312 packages in 7.976s
+<b style="color:#ff5555;">npm</b><b style="color:#ff5555;"> WARN using --force</b><b style="color:#ff5555;"> I sure hope you know what you are doing.
+</b><b style="color:#ff5555;">Generating RSA private key, 2048 bit long modulus (2 primes)
+</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">+</b><b style="color:#ff5555;">+</b><b style="color:#ff5555;">+</b><b style="color:#ff5555;">+</b><b style="color:#ff5555;">+
+</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">.</b><b style="color:#ff5555;">+</b><b style="color:#ff5555;">+</b><b style="color:#ff5555;">+</b><b style="color:#ff5555;">+</b><b style="color:#ff5555;">+
+</b><b style="color:#ff5555;">e is 65537 (0x010001)
+</b><b style="color:#ff5555;">Can't load /root/.rnd into RNG
+140458527412672:error:2406F079:random number generator:RAND_load_file:Cannot open file:../crypto/rand/randfile.c:88:Filename=/root/.rnd
+</b><b style="color:#ff5555;">Signature ok
+subject=CN = pccs.internal
+</b><b style="color:#ff5555;">Getting Private key
+</b>Certificate:
+    Data:
+        Version: 1 (0x0)
+        Serial Number:
+            5e:ad:b1:0e:38:60:89:cf:6a:f1:89:eb:87:79:26:cd:64:ce:a4:7d
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN = pccs.internal
+        Validity
+            Not Before: Apr  8 06:57:15 2021 GMT
+            Not After : Apr  8 06:57:15 2022 GMT
+        Subject: CN = pccs.internal
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+                Modulus:
+                    00:c4:ba:e3:8f:f1:1f:fe:92:ad:1f:b2:ef:a8:85:
+                    c8:37:95:0f:9c:77:33:0c:e3:ca:46:12:18:5e:5b:
+                    99:8c:62:e2:ea:44:1a:2a:92:0e:20:6c:62:8a:c1:
+                    41:d3:48:05:36:f6:35:f9:69:aa:f4:fa:1f:8e:5c:
+                    1b:bf:57:33:bb:e1:61:c6:c3:92:5c:cd:02:ea:fe:
+                    99:42:1d:05:2f:cc:4a:83:06:1b:43:c5:38:29:02:
+                    23:de:51:d6:39:89:e2:82:bd:17:c1:21:aa:52:93:
+                    54:30:82:59:78:1c:96:5d:18:3c:1d:9d:dd:09:71:
+                    a3:e8:bb:5f:33:48:a8:88:30:22:eb:ad:be:ba:9c:
+                    9d:a7:2f:df:2a:23:59:15:79:c4:13:51:1e:4d:59:
+                    dc:31:d4:59:6f:f4:10:da:ad:0c:30:ca:23:29:93:
+                    d7:e9:58:0a:a9:db:82:02:73:43:c3:37:40:17:79:
+                    73:f6:00:53:f9:e2:37:31:70:5f:60:66:32:3e:00:
+                    f5:f6:2b:e1:01:27:56:fb:24:a9:5c:d9:b9:fb:ff:
+                    c0:ba:95:47:0c:be:7a:27:c3:73:8e:20:5f:c2:19:
+                    c1:76:0a:28:ce:df:3f:fc:7a:29:0c:23:c5:83:31:
+                    67:43:ad:70:ba:44:54:29:97:4d:00:de:74:e2:e2:
+                    04:7b
+                Exponent: 65537 (0x10001)
+    Signature Algorithm: sha256WithRSAEncryption
+         c0:d7:49:d6:cf:a2:c1:c7:1f:67:17:66:e1:e9:47:ff:56:39:
+         37:7c:e2:6d:f0:8e:7c:e1:89:7c:7f:d5:6e:da:64:8c:41:71:
+         da:8f:5c:8d:bf:bb:4d:33:b5:fd:31:be:3e:9b:b9:8f:dc:de:
+         d8:6d:69:20:fe:f9:e5:a2:d0:b9:7d:08:30:76:e0:7e:e8:79:
+         dc:fb:e6:6a:d8:35:17:5e:ad:ef:60:c3:af:66:a4:e1:89:58:
+         81:f2:86:38:93:5b:ee:70:1d:47:8e:91:20:fa:af:13:dd:67:
+         ba:bc:58:1a:b0:17:c7:96:b4:0f:9e:9e:20:f3:5f:86:f6:23:
+         c6:e1:6f:13:74:63:13:d6:ad:9b:7b:f1:d8:fd:23:06:12:2a:
+         8c:2a:55:aa:3b:ba:7c:51:1e:71:6d:dc:d8:63:23:df:55:21:
+         97:71:9f:62:70:de:eb:79:3e:f3:77:25:b4:8b:fe:72:53:92:
+         53:16:86:52:ac:97:14:24:38:3f:7b:4b:5e:13:e8:99:a5:49:
+         08:a9:bf:6e:64:93:20:9a:90:41:a5:00:70:43:45:5d:78:7b:
+         ac:b7:e5:e0:9b:83:90:2d:ec:b2:6e:b6:07:2a:0e:ca:eb:78:
+         37:53:8d:24:47:90:98:8c:c3:16:d9:1b:78:3b:f9:73:6c:47:
+         22:15:12:1d
+Removing intermediate container 9ecfdb5fdc80
+ ---&gt; abd22e798be2
+Step 14/14 : CMD npm start
+ ---&gt; Running in 4639a0d9679c
+Removing intermediate container 4639a0d9679c
+ ---&gt; d17ca5098c5d
+Successfully built d17ca5098c5d
+Successfully tagged ncl-sgx/pccs:latest
+</pre>
+</body>
+</html>
