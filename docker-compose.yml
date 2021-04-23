@@ -16,8 +16,10 @@ services:
       - 8081
     networks:
       - pccs
-  openenclave.internal:
-    image: ncl-sgx/openenclave:1.8
+
+  openenclave.base:
+    image: ncl-sgx/openenclave:base-1.8
+    # image: ncl-sgx/openenclave:1.8
     build:
       context: ./openenclave
       args:
@@ -33,8 +35,26 @@ services:
       - pccs
     environment:
       OE_LOG_LEVEL: INFO
-    command: ctest -V
+    # command: ctest
     depends_on:
+      - pccs.internal
+
+  openenclave.ctest:
+    image: ncl-sgx/openenclave:ctest
+    build:
+      context: ./ctest
+    devices:
+      - /dev/sgx_enclave:/dev/sgx_enclave
+      - /dev/sgx_provision:/dev/sgx_provision
+    volumes:
+      - /dev/sgx:/dev/sgx
+      - /var/run/aesmd:/var/run/aesmd
+    networks:
+      - pccs
+    environment:
+      OE_LOG_LEVEL: INFO
+    depends_on:
+      - openenclave.base
       - pccs.internal
 
 networks:
