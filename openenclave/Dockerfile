@@ -122,4 +122,4 @@ RUN  apt-get update \
     /root/external \
     /root/openenclave
 
-CMD tail -f /dev/null
+# CMD tail -f /dev/null

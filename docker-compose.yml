@@ -1,25 +1,14 @@
 version: "3"
 services:
   openenclave.base:
-    image: ncl-sgx/openenclave:base-1.8
-    build:
-      context: ./openenclave
-      args:
-        OE_VERSION: v0.15.0
-        PCCS_SERVER: pccs.internal:8081
+    extends:
+      file: common-services.yml
+      service: openenclave.base
 
   pccs.internal:
-    image: ncl-sgx/pccs:1.8
-    build:
-      context: ./pccs
-      args:
-        DCAP_VERSION: DCAP_1.8
-        CONFIG_FILE: ./config/production-0.json
-        HTTPS_PORT: 8081
-        HOST: 0.0.0.0
-        API_KEY: ${API_KEY}
-        ADMIN_TOKEN: ${ADMIN_TOKEN}
-        USER_TOKEN: ${USER_TOKEN}
+    extends:
+      file: common-services.yml
+      service: pccs.internal
     ports:
       - 8081
     networks:
