@@ -1,4 +1,6 @@
-secret
 ccf
 op-dev
+resources
+
+secret
 *.log

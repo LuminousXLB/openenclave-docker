@@ -28,6 +28,7 @@ services:
       - /dev/sgx_provision:/dev/sgx_provision
     volumes:
       - /dev/sgx:/dev/sgx
+      - /var/run/aesmd:/var/run/aesmd
     networks:
       - pccs
     environment:
