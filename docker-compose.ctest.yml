@@ -25,10 +25,10 @@ services:
     networks:
       - pccs
 
-  openenclave.dev:
-    image: ncl-sgx/openenclave:dev-1.8
+  openenclave.ctest:
+    image: ncl-sgx/openenclave:ctest-1.8
     build:
-      context: ./development
+      context: ./ctest
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision
