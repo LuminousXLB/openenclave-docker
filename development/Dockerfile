@@ -32,7 +32,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
     && ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy \
     && ln -s /usr/bin/clangd-10 /usr/bin/clangd \
     # install mbedtls
-    && wget https://github.com/ARMmbed/mbedtls/archive/refs/tags/v${MBEDTLS_VERSION}.tar.gz \
+    && wget -nv https://github.com/ARMmbed/mbedtls/archive/refs/tags/v${MBEDTLS_VERSION}.tar.gz \
     && tar -xf v${MBEDTLS_VERSION}.tar.gz \
     && mkdir -p mbedtls-${MBEDTLS_VERSION}/build \
     && cd mbedtls-${MBEDTLS_VERSION}/build \
@@ -53,7 +53,7 @@ WORKDIR /home/${UNAME}
 
 ARG VEGETA_VERSION="12.8.4"
 
-RUN wget https://github.com/tsenart/vegeta/releases/download/v${VEGETA_VERSION}/vegeta_${VEGETA_VERSION}_linux_amd64.tar.gz \
+RUN wget -nv https://github.com/tsenart/vegeta/releases/download/v${VEGETA_VERSION}/vegeta_${VEGETA_VERSION}_linux_amd64.tar.gz \
     && sudo mkdir -p /opt/vegeta \
     && sudo tar -xf vegeta_${VEGETA_VERSION}_linux_amd64.tar.gz -C /opt/vegeta \
     && rm vegeta_${VEGETA_VERSION}_linux_amd64.tar.gz \
