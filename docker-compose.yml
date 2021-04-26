@@ -27,10 +27,25 @@ services:
     depends_on:
       - openenclave.base
 
+  openenclave.join:
+    image: ncl-sgx/openenclave:join-1.8
+    build: ./join
+    devices:
+      - /dev/sgx_enclave:/dev/sgx_enclave
+      - /dev/sgx_provision:/dev/sgx_provision
+    volumes:
+      - /dev/sgx:/dev/sgx
+      - /var/run/aesmd:/var/run/aesmd
+      - ./ssh:/home/ubuntu/.ssh
+    networks:
+      - pccs
+    depends_on:
+      - openenclave.dev
+      - pccs.internal
+
   openenclave.ccf:
     image: ncl-sgx/openenclave:ccf-1.8
-    build:
-      context: ./ccf
+    build: ./ccf
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision
@@ -45,8 +60,7 @@ services:
 
   openenclave.ctest:
     image: ncl-sgx/openenclave:ctest-1.8
-    build:
-      context: ./ctest
+    build: ./ctest
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision

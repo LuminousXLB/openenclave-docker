@@ -39,8 +39,4 @@ USER ${UID}
 
 WORKDIR /home/${UNAME}
 
-COPY --chown=${UID}:${GID} ssh .ssh
-
-RUN cp -r /opt/openenclave/share/openenclave/samples/ ./
-
-CMD sudo service ssh start && tail -f /dev/null
+# CMD sudo service ssh start

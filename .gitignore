@@ -1,5 +1,4 @@
-op-dev
-resources
-
+ssh
 .env
+
 *.log
