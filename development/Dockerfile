@@ -6,28 +6,16 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /tmp
 
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
+RUN apt-get update \
     && apt-get install --no-install-recommends -y \
     autossh \
-    ccache \
     clang-format-10 \
     clang-tidy-10 \
     clang-tools-10 \
     clangd-10 \
-    doxygen \
-    expect \
-    jq \
-    kmod \
-    libc++-8-dev \
-    # libc++1 \
-    libc++abi-8-dev \
-    libuv1-dev \
-    nodejs \
     openssh-server \
-    python3.8-dev \
-    python3.8-venv \
-    shellcheck \
     && rm -rf /var/lib/apt/lists/* \
+    # link clang{-format, -tidy, d}-10
     && ln -s /usr/bin/clang-format-10 /usr/bin/clang-format \
     && ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy \
     && ln -s /usr/bin/clangd-10 /usr/bin/clangd \
@@ -51,19 +39,8 @@ USER ${UID}
 
 WORKDIR /home/${UNAME}
 
-ARG VEGETA_VERSION="12.8.4"
+COPY --chown=${UID}:${GID} ssh .ssh
 
-RUN wget -nv https://github.com/tsenart/vegeta/releases/download/v${VEGETA_VERSION}/vegeta_${VEGETA_VERSION}_linux_amd64.tar.gz \
-    && sudo mkdir -p /opt/vegeta \
-    && sudo tar -xf vegeta_${VEGETA_VERSION}_linux_amd64.tar.gz -C /opt/vegeta \
-    && rm vegeta_${VEGETA_VERSION}_linux_amd64.tar.gz \
-    && cp -r /opt/openenclave/share/openenclave/samples openenclave-samples \
-    && git clone https://github.com/microsoft/CCF.git --recursive \
-    && cd CCF \
-    && mkdir build \
-    && cd build \
-    && cmake -GNinja .. \
-    && ninja
+RUN cp -r /opt/openenclave/share/openenclave/samples/ ./
 
-
-CMD tail -f /dev/null
+CMD sudo service ssh start && tail -f /dev/null

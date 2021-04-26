@@ -1,6 +1,5 @@
-ccf
 op-dev
 resources
 
-secret
+.env
 *.log

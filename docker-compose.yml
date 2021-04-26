@@ -1,23 +1,52 @@
 version: "3"
 services:
-  openenclave.base:
-    extends:
-      file: common-services.yml
-      service: openenclave.base
-
   pccs.internal:
-    extends:
-      file: common-services.yml
-      service: pccs.internal
-    ports:
-      - 8081
-    networks:
-      - pccs
+    image: ncl-sgx/pccs:1.8
+    build:
+      context: ./pccs
+      args:
+        DCAP_VERSION: DCAP_1.8
+        CONFIG_FILE: ./config/production-0.json
+        HTTPS_PORT: 8081
+        HOST: 0.0.0.0
+        API_KEY: ${API_KEY}
+        ADMIN_TOKEN: ${ADMIN_TOKEN}
+        USER_TOKEN: ${USER_TOKEN}
+
+  openenclave.base:
+    image: ncl-sgx/openenclave:base-1.8
+    build:
+      context: ./openenclave
+      args:
+        OE_VERSION: v0.15.0
+        PCCS_SERVER: pccs.internal:8081
 
   openenclave.dev:
     image: ncl-sgx/openenclave:dev-1.8
+    build: ./development
+    depends_on:
+      - openenclave.base
+
+  openenclave.ccf:
+    image: ncl-sgx/openenclave:ccf-1.8
     build:
-      context: ./development
+      context: ./ccf
+    devices:
+      - /dev/sgx_enclave:/dev/sgx_enclave
+      - /dev/sgx_provision:/dev/sgx_provision
+    volumes:
+      - /dev/sgx:/dev/sgx
+      - /var/run/aesmd:/var/run/aesmd
+    networks:
+      - pccs
+    depends_on:
+      - openenclave.dev
+      - pccs.internal
+
+  openenclave.ctest:
+    image: ncl-sgx/openenclave:ctest-1.8
+    build:
+      context: ./ctest
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision
