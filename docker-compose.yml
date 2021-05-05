@@ -12,6 +12,8 @@ services:
         API_KEY: ${API_KEY}
         ADMIN_TOKEN: ${ADMIN_TOKEN}
         USER_TOKEN: ${USER_TOKEN}
+    networks:
+      - pccs
 
   openenclave.base:
     image: ncl-sgx/openenclave:base-1.8
