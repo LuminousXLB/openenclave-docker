@@ -1,4 +1,8 @@
-FROM ncl-sgx/openenclave:base-1.8
+ARG BASE
+
+FROM ${BASE}
+
+ARG OE_VERSION
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -14,8 +18,7 @@ WORKDIR /home/${UNAME}
 RUN git clone https://github.com/openenclave/openenclave.git \
     && cd openenclave \
     && git checkout ${OE_VERSION} \
-    && git submodule init \
-    && git submodule update \
+    && git submodule update --init --recursive \
     && mkdir build \
     && cd build \
     && cmake .. -GNinja -DENABLE_REFMAN=OFF \

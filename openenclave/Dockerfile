@@ -2,7 +2,7 @@ FROM ubuntu:bionic
 
 ARG CURRENT_DISTR=ubuntu18.04
 
-ARG OE_VERSION=v0.15.0
+ARG OE_VERSION
 ARG OE_PREFIX=/opt/openenclave
 ARG OE_LVI_BIN_DIR=/opt/oe_lvi
 ARG OE_LVI_SCRIPTS_DIR=${OE_PREFIX}/bin/scripts/lvi-mitigation
@@ -47,7 +47,6 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y \
     # dependencies
     build-essential \
-    clang-10 \
     clang-8 \
     curl \
     # dkms \

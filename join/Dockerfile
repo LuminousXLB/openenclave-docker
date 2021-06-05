@@ -1,4 +1,6 @@
-FROM ncl-sgx/openenclave:dev-1.8
+ARG BASE
+
+FROM ${BASE}
 
 ARG DEBIAN_FRONTEND=noninteractive
 

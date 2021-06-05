@@ -16,22 +16,29 @@ services:
       - pccs
 
   openenclave.base:
-    image: ncl-sgx/openenclave:base-1.8
+    image: ncl-sgx/openenclave:base-1.10
     build:
       context: ./openenclave
       args:
-        OE_VERSION: v0.15.0
+        OE_VERSION: v0.16.1
         PCCS_SERVER: pccs.internal:8081
 
   openenclave.dev:
-    image: ncl-sgx/openenclave:dev-1.8
-    build: ./development
+    image: ncl-sgx/openenclave:dev-1.10
+    build:
+      context: ./development
+      args:
+        BASE: ncl-sgx/openenclave:base-1.10
+        MBEDTLS_VERSION: 2.26.0
     depends_on:
       - openenclave.base
 
   openenclave.join:
-    image: ncl-sgx/openenclave:join-1.8
-    build: ./join
+    image: ncl-sgx/openenclave:join-1.10
+    build:
+      context: ./join
+      args:
+        BASE: ncl-sgx/openenclave:dev-1.10
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision
@@ -45,24 +52,13 @@ services:
       - openenclave.dev
       - pccs.internal
 
-  openenclave.ccf:
-    image: ncl-sgx/openenclave:ccf-1.8
-    build: ./ccf
-    devices:
-      - /dev/sgx_enclave:/dev/sgx_enclave
-      - /dev/sgx_provision:/dev/sgx_provision
-    volumes:
-      - /dev/sgx:/dev/sgx
-      - /var/run/aesmd:/var/run/aesmd
-    networks:
-      - pccs
-    depends_on:
-      - openenclave.dev
-      - pccs.internal
-
   openenclave.ctest:
-    image: ncl-sgx/openenclave:ctest-1.8
-    build: ./ctest
+    image: ncl-sgx/openenclave:ctest-1.10
+    build:
+      context: ./ctest
+      args:
+        BASE: ncl-sgx/openenclave:base-1.10
+        OE_VERSION: v0.16.1
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision

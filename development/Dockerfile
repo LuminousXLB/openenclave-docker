@@ -1,6 +1,8 @@
-FROM ncl-sgx/openenclave:base-1.8
+ARG BASE
 
-ARG MBEDTLS_VERSION=2.25.0
+FROM ${BASE}
+
+ARG MBEDTLS_VERSION
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -11,20 +13,19 @@ RUN apt-get update \
     autossh \
     clang-format-10 \
     clang-tidy-10 \
-    clang-tools-10 \
-    clangd-10 \
     openssh-server \
     && rm -rf /var/lib/apt/lists/* \
     # link clang{-format, -tidy, d}-10
+    && ln -s /usr/bin/clang-8 /usr/bin/clang \
+    && ln -s /usr/bin/clang++-8 /usr/bin/clang++ \
     && ln -s /usr/bin/clang-format-10 /usr/bin/clang-format \
     && ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy \
-    && ln -s /usr/bin/clangd-10 /usr/bin/clangd \
     # install mbedtls
     && wget -nv https://github.com/ARMmbed/mbedtls/archive/refs/tags/v${MBEDTLS_VERSION}.tar.gz \
     && tar -xf v${MBEDTLS_VERSION}.tar.gz \
     && mkdir -p mbedtls-${MBEDTLS_VERSION}/build \
     && cd mbedtls-${MBEDTLS_VERSION}/build \
-    && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. \
+    && CC=clang cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DENABLE_TESTING=Off .. \
     && make -j \
     && make install \
     && cd /tmp \
