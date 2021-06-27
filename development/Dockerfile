@@ -11,9 +11,19 @@ WORKDIR /tmp
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
     autossh \
+    bsdmainutils  \
     clang-format-10 \
     clang-tidy-10 \
+    netcat \
     openssh-server \
+    python3-dev \
+    unzip \
+    vim \
+    zip \
+    && pip3 --no-cache-dir install \
+    cmakelang \
+    setuptools \
+    wheel \
     && rm -rf /var/lib/apt/lists/* \
     # link clang{-format, -tidy, d}-10
     && ln -s /usr/bin/clang-8 /usr/bin/clang \
@@ -30,14 +40,3 @@ RUN apt-get update \
     && make install \
     && cd /tmp \
     && rm -rf *
-
-ARG UNAME=ubuntu
-ARG GNAME=ubuntu
-ARG UID=1000
-ARG GID=1000
-
-USER ${UID}
-
-WORKDIR /home/${UNAME}
-
-# CMD sudo service ssh start
