@@ -52,6 +52,26 @@ services:
       - openenclave.dev
       - pccs.internal
 
+  openenclave.bmv2:
+    image: ncl-sgx/openenclave:bmv2-1.10
+    build:
+      context: ./bmv2
+      args:
+        BASE: ncl-sgx/openenclave:dev-1.10
+    privileged: true
+    devices:
+      - /dev/sgx_enclave:/dev/sgx_enclave
+      - /dev/sgx_provision:/dev/sgx_provision
+    volumes:
+      - /dev/sgx:/dev/sgx
+      - /var/run/aesmd:/var/run/aesmd
+      - ./ssh:/home/ubuntu/.ssh
+    networks:
+      - pccs
+    depends_on:
+      - openenclave.dev
+      - pccs.internal
+
   openenclave.ctest:
     image: ncl-sgx/openenclave:ctest-1.10
     build:
