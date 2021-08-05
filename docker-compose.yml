@@ -1,12 +1,12 @@
 version: "3"
 services:
   pccs.internal:
-    image: ncl-sgx/pccs:1.8
+    image: ncl-sgx/pccs:1.10
     build:
       context: ./pccs
       args:
-        DCAP_VERSION: DCAP_1.8
-        CONFIG_FILE: ./config/production-0.json
+        # DCAP_VERSION: DCAP_1.10.3
+        CONFIG_TEMPLATE: ./config/default.json
         HTTPS_PORT: 8081
         HOST: 0.0.0.0
         API_KEY: ${API_KEY}
@@ -16,29 +16,29 @@ services:
       - pccs
 
   openenclave.base:
-    image: ncl-sgx/openenclave:base-1.10
+    image: ncl-sgx/openenclave:base-v0.17.1
     build:
       context: ./openenclave
       args:
-        OE_VERSION: v0.16.1
+        OE_VERSION: v0.17.1
         PCCS_SERVER: pccs.internal:8081
 
   openenclave.dev:
-    image: ncl-sgx/openenclave:dev-1.10
+    image: ncl-sgx/openenclave:dev-v0.17.1
     build:
       context: ./development
       args:
-        BASE: ncl-sgx/openenclave:base-1.10
-        MBEDTLS_VERSION: 2.26.0
+        BASE: ncl-sgx/openenclave:base-v0.17.1
+        MBEDTLS_VERSION: 2.27.0
     depends_on:
       - openenclave.base
 
   openenclave.join:
-    image: ncl-sgx/openenclave:join-1.10
+    image: ncl-sgx/openenclave:join-v0.17.1
     build:
       context: ./join
       args:
-        BASE: ncl-sgx/openenclave:dev-1.10
+        BASE: ncl-sgx/openenclave:dev-v0.17.1
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision
@@ -53,11 +53,11 @@ services:
       - pccs.internal
 
   openenclave.bmv2:
-    image: ncl-sgx/openenclave:bmv2-1.10
+    image: ncl-sgx/openenclave:bmv2-v0.17.1
     build:
       context: ./bmv2
       args:
-        BASE: ncl-sgx/openenclave:dev-1.10
+        BASE: ncl-sgx/openenclave:dev-v0.17.1
     privileged: true
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
@@ -73,12 +73,12 @@ services:
       - pccs.internal
 
   openenclave.ctest:
-    image: ncl-sgx/openenclave:ctest-1.10
+    image: ncl-sgx/openenclave:ctest-v0.17.1
     build:
       context: ./ctest
       args:
-        BASE: ncl-sgx/openenclave:base-1.10
-        OE_VERSION: v0.16.1
+        BASE: ncl-sgx/openenclave:base-v0.17.1
+        OE_VERSION: v0.17.1
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision
@@ -89,6 +89,7 @@ services:
       - pccs
     environment:
       OE_LOG_LEVEL: INFO
+    # command: ctest -V -R mbedtls_tls_e2e
     depends_on:
       - openenclave.base
       - pccs.internal

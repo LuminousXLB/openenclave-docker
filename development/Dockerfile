@@ -26,8 +26,8 @@ RUN apt-get update \
     wheel \
     && rm -rf /var/lib/apt/lists/* \
     # link clang{-format, -tidy, d}-10
-    && ln -s /usr/bin/clang-8 /usr/bin/clang \
-    && ln -s /usr/bin/clang++-8 /usr/bin/clang++ \
+    && ln -s /usr/bin/clang-10 /usr/bin/clang \
+    && ln -s /usr/bin/clang++-10 /usr/bin/clang++ \
     && ln -s /usr/bin/clang-format-10 /usr/bin/clang-format \
     && ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy \
     # install mbedtls
@@ -35,7 +35,7 @@ RUN apt-get update \
     && tar -xf v${MBEDTLS_VERSION}.tar.gz \
     && mkdir -p mbedtls-${MBEDTLS_VERSION}/build \
     && cd mbedtls-${MBEDTLS_VERSION}/build \
-    && CC=clang cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DENABLE_TESTING=Off .. \
+    && CC=clang cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DENABLE_TESTING=OFF .. \
     && make -j \
     && make install \
     && cd /tmp \

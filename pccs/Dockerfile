@@ -1,18 +1,32 @@
 FROM ubuntu:bionic
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG DCAP_VERSION=DCAP_1.10
+ARG DCAP_VERSION
 
 WORKDIR /root
 
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y ca-certificates curl g++ git make openssl python zip \
+    && apt-get install --no-install-recommends -y \
+    ca-certificates \
+    curl \
+    g++ \
+    git \
+    make \
+    openssl \
+    python \
     && curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
     && apt-get install --no-install-recommends -y nodejs \
-    && rm -rf /var/lib/apt/lists/* \
-    && git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git \
+    && rm -rf /var/lib/apt/lists/*
+
+# https://github.com/openenclave/openenclave/issues/4139
+# https://github.com/intel/SGXDataCenterAttestationPrimitives/pull/190
+COPY crl-format.patch .
+
+RUN git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git \
     && cd SGXDataCenterAttestationPrimitives \
     && git checkout ${DCAP_VERSION} \
+    # fix crl format
+    && git apply --reject --whitespace=fix /root/crl-format.patch \
     && cd tools/PCKCertSelection \
     && make -j -C PCKCertSelectionLib \
     && cd ../../../ \
@@ -28,8 +42,8 @@ RUN apt-get update \
 
 WORKDIR /root/pccs
 
+ARG CONFIG_TEMPLATE=./config/default.json
 ARG CONFIG_FILE=./config/default.json
-ARG _CONFIG_FILE=./config/default.json
 
 ARG HTTPS_PORT=8081
 ARG HOST=0.0.0.0
@@ -40,12 +54,12 @@ ARG USER_TOKEN
 RUN test -n "${API_KEY}" \
     && test -n "${ADMIN_TOKEN}" \
     && test -n "${USER_TOKEN}" \
-    && (test ${CONFIG_FILE} = ${_CONFIG_FILE} || cp ${CONFIG_FILE} ${_CONFIG_FILE}) \
-    && sed "/\"HTTPS_PORT\"*/c\ \ \ \ \"HTTPS_PORT\" \: ${HTTPS_PORT}," -i ${_CONFIG_FILE} \
-    && sed "/\"hosts\"*/c\ \ \ \ \"hosts\" \: \"${HOST}\"," -i ${_CONFIG_FILE} \
-    && sed "/\"ApiKey\"*/c\ \ \ \ \"ApiKey\" \: \"${API_KEY}\"," -i ${_CONFIG_FILE} \
-    && sed "/\"AdminTokenHash\"*/c\ \ \ \ \"AdminTokenHash\" \: \"$(echo -n "${ADMIN_TOKEN}" | sha512sum | tr -d '[:space:]-')\"," -i ${_CONFIG_FILE} \
-    && sed "/\"UserTokenHash\"*/c\ \ \ \ \"UserTokenHash\" \: \"$(echo -n "${USER_TOKEN}" | sha512sum | tr -d '[:space:]-')\"," -i ${_CONFIG_FILE} \
+    && (test ${CONFIG_TEMPLATE} = ${CONFIG_FILE} || cp ${CONFIG_TEMPLATE} ${CONFIG_FILE}) \
+    && sed "/\"HTTPS_PORT\"*/c\ \ \ \ \"HTTPS_PORT\" \: ${HTTPS_PORT}," -i ${CONFIG_FILE} \
+    && sed "/\"hosts\"*/c\ \ \ \ \"hosts\" \: \"${HOST}\"," -i ${CONFIG_FILE} \
+    && sed "/\"ApiKey\"*/c\ \ \ \ \"ApiKey\" \: \"${API_KEY}\"," -i ${CONFIG_FILE} \
+    && sed "/\"AdminTokenHash\"*/c\ \ \ \ \"AdminTokenHash\" \: \"$(echo -n "${ADMIN_TOKEN}" | sha512sum | tr -d '[:space:]-')\"," -i ${CONFIG_FILE} \
+    && sed "/\"UserTokenHash\"*/c\ \ \ \ \"UserTokenHash\" \: \"$(echo -n "${USER_TOKEN}" | sha512sum | tr -d '[:space:]-')\"," -i ${CONFIG_FILE} \
     && mkdir ssl_key \
     && openssl genrsa -out ssl_key/private.pem 2048 \
     && openssl req -new -key ssl_key/private.pem -out ssl_key/csr.pem -subj "/CN=pccs.internal/" \
