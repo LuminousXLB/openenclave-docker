@@ -52,7 +52,8 @@ RUN apt-get update \
     && ./scripts/setup-pi.sh \
     && ./scripts/setup-bmv2.sh \
     && ./scripts/setup-p4c.sh \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/*
 
 ARG UNAME=ubuntu
 ARG GNAME=ubuntu
