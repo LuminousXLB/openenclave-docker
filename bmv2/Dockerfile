@@ -32,9 +32,8 @@ RUN apt-get update \
     libpcap-dev \
     llvm \
     python-all-dev \
-    python-pip \
     python-setuptools \
-    python-wheel \
+    # python-wheel \
     python3-pip \
     python3-setuptools \
     python3-wheel \
@@ -44,6 +43,8 @@ RUN apt-get update \
     setuptools \
     ply \
     psutil \
+    && curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py \
+    && sudo python2 get-pip.py \
     && chmod +x ./scripts/*.sh \
     && ./scripts/setup-mininet.sh \
     && ./scripts/setup-thrift.sh \
