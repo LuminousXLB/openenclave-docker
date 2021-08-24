@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 ARG OE_VERSION
 ARG OE_PREFIX=/opt/openenclave
@@ -14,11 +14,6 @@ ARG UID=1000
 ARG GID=1000
 
 WORKDIR /tmp
-
-# install dcap driver (requires dkms package)
-# RUN curl https://download.01.org/intel-sgx/latest/dcap-latest/linux/distro/${CURRENT_DISTR}-server/sgx_linux_x64_driver_1.41.bin -o sgx_linux_x64_driver.bin \
-#     && chmod +x sgx_linux_x64_driver.bin \
-#     && ./sgx_linux_x64_driver.bin
 
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
@@ -65,14 +60,11 @@ RUN apt-get update \
     libsgx-ae-qe3 \
     libsgx-ae-qve \
     libsgx-aesm-quote-ex-plugin \
+    libsgx-dcap-default-qpl \
     libsgx-pce-logic \
     libsgx-quote-ex \
     libsgx-urts \
     && pip3 --no-cache-dir install cmake \
-    # install libsgx-dcap-default-qpl
-    && apt-get install --no-install-recommends -y libsgx-dcap-default-qpl \
-    # && curl https://download.01.org/intel-sgx/sgx-dcap/1.10/linux/distro/ubuntu18.04-server/debian_pkgs/libs/libsgx-dcap-default-qpl/libsgx-dcap-default-qpl_1.8.100.2-bionic1_amd64.deb -o libsgx-dcap-default-qpl.deb \
-    # && dpkg -i ./libsgx-dcap-default-qpl.deb \
     && test -z $(dpkg --list | grep az-dcap-client) \
     && ln -s $(readlink -f /usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so.1) /usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so \
     && sed "s/localhost:8081/"${PCCS_SERVER}"/g" -i /etc/sgx_default_qcnl.conf \
