@@ -87,6 +87,10 @@ RUN apt-get update \
     && tar -xf as.ld.objdump.gold.r3.tar.gz \
     && cp external/toolset/${ID}${VERSION_ID}/* ${OE_LVI_BIN_DIR} \
     # clean up
+    && apt-get install --no-install-recommends -y \
+    tzdata \
+    && ln -fs /usr/share/zoneinfo/Asia/Singapore /etc/localtime \
+    && dpkg-reconfigure --frontend noninteractive tzdata \
     && rm -rf \
     /var/lib/apt/lists/* \
     /tmp/*
