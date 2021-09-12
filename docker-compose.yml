@@ -65,6 +65,7 @@ services:
       - /dev/sgx:/dev/sgx
       - /var/run/aesmd:/var/run/aesmd
       - ./ssh:/home/ubuntu/.ssh
+      - ./volume/intel:/home
     networks:
       - pccs
     depends_on:
