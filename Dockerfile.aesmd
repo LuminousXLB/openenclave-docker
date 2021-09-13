@@ -7,12 +7,12 @@ COPY ./common /tmp
 
 RUN set -x &&
     /tmp/add-apt-sources.sh &&
-    PCCS_SERVER=${PCCS_SERVER} /tmp/install-default-qpl.sh &&
     apt-get install --no-install-recommends -y \
         libsgx-aesm-quote-ex-plugin \
         libsgx-aesm-ecdsa-plugin \
         libsgx-aesm-epid-plugin \
         sgx-aesm-service &&
+    PCCS_SERVER=${PCCS_SERVER} /tmp/install-default-qpl.sh &&
     rm -rf /var/lib/apt/lists/*
 
 ENV NAME=aesm_service
@@ -26,7 +26,8 @@ RUN set -x &&
     chown -R aesmd:aesmd /var/run/aesmd/ &&
     chmod 0755 /var/run/aesmd/ &&
     chown -R aesmd:aesmd /var/opt/aesmd/ &&
-    chmod 0750 /var/opt/aesmd/
+    chmod 0750 /var/opt/aesmd/ &&
+    /tmp/set-timezone.sh
 
 USER aesmd
 
