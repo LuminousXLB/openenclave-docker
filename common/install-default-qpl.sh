@@ -6,8 +6,7 @@ apt-get install --no-install-recommends -y libsgx-dcap-default-qpl
 
 QCNL_CONF=/etc/sgx_default_qcnl.conf
 
-if [ $PCCS_SERVER ]
-then
+if [ $PCCS_SERVER ]; then
     sed "s/localhost:8081/"$PCCS_SERVER"/g" -i $QCNL_CONF
 fi
 

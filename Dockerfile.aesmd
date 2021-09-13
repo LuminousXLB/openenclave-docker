@@ -7,7 +7,7 @@ COPY ./common /tmp
 
 RUN set -x &&
     /tmp/add-apt-sources.sh &&
-    PCCS_SERVER=${PCCS_SERVER} /tmp/install-qcnl.sh &&
+    PCCS_SERVER=${PCCS_SERVER} /tmp/install-default-qpl.sh &&
     apt-get install --no-install-recommends -y \
         libsgx-aesm-quote-ex-plugin \
         libsgx-aesm-ecdsa-plugin \
