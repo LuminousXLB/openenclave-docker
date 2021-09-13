@@ -14,9 +14,20 @@ services:
         USER_TOKEN: ${USER_TOKEN}
     networks:
       - pccs
-    ports:
-      - 8081:8081
 
+  aems.internal:
+    image: ncl-sgx/aems:2.14
+    build:
+      context: .
+      dockerfile: Dockerfile.aesmd
+      args:
+        PCCS_SERVER: pccs.internal:8081
+    depends_on:
+      - pccs.internal
+    networks:
+      - pccs
+    volumes:
+      - aesmd-socket:/var/run/aesmd
 
   openenclave.base:
     image: ncl-sgx/openenclave:base-v0.17.1
@@ -25,6 +36,10 @@ services:
       args:
         OE_VERSION: v0.17.1
         PCCS_SERVER: pccs.internal:8081
+    networks:
+      - pccs
+    volumes:
+      - aesmd-socket:/var/run/aesmd
 
   openenclave.dev:
     image: ncl-sgx/openenclave:dev-v0.17.1
@@ -119,3 +134,6 @@ services:
 
 networks:
   pccs:
+
+volumes:
+  aesmd-socket:

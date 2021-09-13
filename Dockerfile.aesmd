@@ -1,0 +1,35 @@
+FROM ubuntu:focal
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG PCCS_SERVER
+
+COPY ./common /tmp
+
+RUN set -x \
+    && /tmp/add-apt-sources.sh \
+    && PCCS_SERVER=${PCCS_SERVER} /tmp/install-qcnl.sh \
+    && apt-get install --no-install-recommends -y \
+    libsgx-aesm-quote-ex-plugin \
+    libsgx-aesm-ecdsa-plugin \
+    libsgx-aesm-epid-plugin \
+    sgx-aesm-service \
+    && rm -rf /var/lib/apt/lists/* \
+
+ENV NAME=aesm_service
+ENV AESM_PATH=/opt/intel/sgx-aesm-service/aesm
+ENV LD_LIBRARY_PATH=/opt/intel/sgx-aesm-service/aesm
+
+RUN set -x \
+    && groupadd --gid 1001 sgx_prv \
+    && $AESM_PATH/linksgx.sh \
+    && mkdir -p /var/run/aesmd/ \
+    && chown -R aesmd:aesmd /var/run/aesmd/ \
+    && chmod 0755 /var/run/aesmd/ \
+    && chown -R aesmd:aesmd /var/opt/aesmd/ \
+    && chmod 0750 /var/opt/aesmd/
+
+USER aesmd
+
+WORKDIR /opt/intel/sgx-aesm-service/aesm
+
+CMD ./aesm_service --no-daemon
