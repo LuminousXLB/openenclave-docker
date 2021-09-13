@@ -5,29 +5,29 @@ ARG PCCS_SERVER
 
 COPY ./common /tmp
 
-RUN set -x &&
-    /tmp/add-apt-sources.sh &&
-    apt-get install --no-install-recommends -y \
-        libsgx-aesm-quote-ex-plugin \
-        libsgx-aesm-ecdsa-plugin \
-        libsgx-aesm-epid-plugin \
-        sgx-aesm-service &&
-    PCCS_SERVER=${PCCS_SERVER} /tmp/install-default-qpl.sh &&
-    rm -rf /var/lib/apt/lists/*
+RUN set -x \
+    && tmp/add-apt-sources.sh \
+    && apt-get install --no-install-recommends -y \
+    libsgx-aesm-quote-ex-plugin \
+    libsgx-aesm-ecdsa-plugin \
+    libsgx-aesm-epid-plugin \
+    sgx-aesm-service \
+    && PCCS_SERVER=${PCCS_SERVER} /tmp/install-default-qpl.sh \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV NAME=aesm_service
 ENV AESM_PATH=/opt/intel/sgx-aesm-service/aesm
 ENV LD_LIBRARY_PATH=/opt/intel/sgx-aesm-service/aesm
 
-RUN set -x &&
-    groupadd --gid 1001 sgx_prv &&
-    $AESM_PATH/linksgx.sh &&
-    mkdir -p /var/run/aesmd/ &&
-    chown -R aesmd:aesmd /var/run/aesmd/ &&
-    chmod 0755 /var/run/aesmd/ &&
-    chown -R aesmd:aesmd /var/opt/aesmd/ &&
-    chmod 0750 /var/opt/aesmd/ &&
-    /tmp/set-timezone.sh
+RUN set -x \
+    && groupadd --gid 1001 sgx_prv \
+    && AESM_PATH/linksgx.sh \
+    && mkdir -p /var/run/aesmd/ \
+    && chown -R aesmd:aesmd /var/run/aesmd/ \
+    && chmod 0755 /var/run/aesmd/ \
+    && chown -R aesmd:aesmd /var/opt/aesmd/ \
+    && chmod 0750 /var/opt/aesmd/ \
+    && tmp/set-timezone.sh
 
 USER aesmd
 
