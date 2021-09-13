@@ -1,0 +1,144 @@
+ARG UNAME=ubuntu
+# ARG OE_VERSION
+
+FROM ubuntu:focal AS BASE
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ARG PCCS_SERVER
+ARG UNAME
+
+COPY ./common /tmp/common
+WORKDIR /tmp
+
+RUN set -x \
+    # Add apt repositories
+    && /tmp/common/add-apt-sources.sh \
+    # Install dependencies
+    && apt-get install --no-install-recommends -y \
+    apt-transport-https \
+    software-properties-common \
+    sudo \
+    build-essential \
+    clang-10 \
+    curl \
+    gdb \
+    git \
+    libssl-dev \
+    libtool \
+    linux-headers-$(uname -r) \
+    lldb-10 \
+    ninja-build \
+    pkg-config python \
+    python3-apt \
+    python3-pip \
+    wget \
+    # install developer packages
+    && apt-get install --no-install-recommends -y \
+    libsgx-dcap-default-qpl-dbgsym \
+    libsgx-dcap-ql-dbgsym \
+    libsgx-enclave-common-dbgsym \
+    libsgx-epid-dbgsym \
+    # install default quote provider library (QPL)
+    && PCCS_SERVER=${PCCS_SERVER} /tmp/common/config-default-qpl.sh \
+    && ln -s $(readlink -f /usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so.1) /usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so \
+    # install open-enclave
+    && apt-get install --no-install-recommends -y open-enclave \
+    # install cmake
+    && pip3 --no-cache-dir install cmake \
+    # apply lvi-mitigation
+    && /tmp/common/apply-lvi-mitigation.sh \
+    # add sgx_prv group
+    && groupadd --gid 1001 sgx_prv \
+    # add default user
+    && useradd --create-home --shell /bin/bash ${UNAME} \
+    && echo "${UNAME} ALL=(ALL) NOPASSWD: ALL" >>/etc/sudoers \
+    # set timezone
+    && /tmp/common/set-timezone.sh \
+    && rm -rf /var/lib/apt/lists/* 
+
+
+FROM BASE AS DEVELOPMENT
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ARG MBEDTLS_VERSION
+
+RUN set -x \
+    && apt-get update \
+    && apt-get install --no-install-recommends -y \
+    autossh \
+    bsdmainutils  \
+    clang-format-10 \
+    clang-tidy-10 \
+    lsof \
+    netcat \
+    openssh-server \
+    python3-dev \
+    unzip \
+    vim \
+    zip \
+    && pip3 --no-cache-dir install \
+    cmakelang \
+    setuptools \
+    wheel \
+    && rm -rf /var/lib/apt/lists/* \
+    # link clang{-format, -tidy, d}-10
+    && ln -s /usr/bin/clang-10 /usr/bin/clang \
+    && ln -s /usr/bin/clang++-10 /usr/bin/clang++ \
+    && ln -s /usr/bin/clang-format-10 /usr/bin/clang-format \
+    && ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy \
+    # install mbedtls
+    && /tmp/common/install-mbedtls.sh 
+
+
+FROM DEVELOPMENT AS INTEL
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+WORKDIR /opt/intel
+
+RUN set -x \
+    && apt-get update \
+    && apt-get install --no-install-recommends -y \
+    autoconf \
+    automake \
+    debhelper \
+    libcurl4-openssl-dev \
+    libprotobuf-dev \
+    ocaml \
+    ocamlbuild \
+    perl \
+    protobuf-compiler \
+    python-is-python3 \
+    reprepro \
+    && rm -rf /var/lib/apt/lists/*  \
+    # install intel sgx sdk
+    && . /etc/os-release \
+    && wget https://download.01.org/intel-sgx/latest/linux-latest/distro/${ID}${VERSION_ID}-server/sgx_linux_x64_sdk_2.14.100.2.bin \
+    && chmod +x sgx_linux_x64_sdk_2.14.100.2.bin \
+    && echo 'yes' | ./sgx_linux_x64_sdk_2.14.100.2.bin \
+    && rm ./sgx_linux_x64_sdk_2.14.100.2.bin \
+    && echo "source /opt/intel/sgxsdk/environment" >> /etc/profile.d/50-sgxsdk.sh
+
+FROM INTEL AS SHARE
+
+ARG UNAME
+
+RUN set -x \
+    && apt-get update \
+    && apt-get install --no-install-recommends -y \
+    rsyslog \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --shell /bin/bash jeremy \
+    && echo "jeremy ALL=(ALL) NOPASSWD: ALL" >>/etc/sudoers 
+
+USER ${UNAME}
+
+WORKDIR /home/${UNAME}
+# ARG SHARE_PORT=42522
+
+CMD set -x \
+    && sudo service rsyslog start \
+    && sudo service ssh start \
+    && autossh -N -R ${SHARE_PORT}:localhost:22 ubuntu@aws.taraxacum.ink

@@ -8,11 +8,13 @@ COPY ./common /tmp
 RUN set -x \
     && tmp/add-apt-sources.sh \
     && apt-get install --no-install-recommends -y \
-    libsgx-aesm-quote-ex-plugin \
     libsgx-aesm-ecdsa-plugin \
     libsgx-aesm-epid-plugin \
+    libsgx-aesm-quote-ex-plugin \
+    libsgx-dcap-default-qpl \
     sgx-aesm-service \
-    && PCCS_SERVER=${PCCS_SERVER} /tmp/install-default-qpl.sh \
+    tzdata \
+    && PCCS_SERVER=${PCCS_SERVER} /tmp/config-default-qpl.sh \
     && rm -rf /var/lib/apt/lists/*
 
 ENV NAME=aesm_service
@@ -21,7 +23,7 @@ ENV LD_LIBRARY_PATH=/opt/intel/sgx-aesm-service/aesm
 
 RUN set -x \
     && groupadd --gid 1001 sgx_prv \
-    && AESM_PATH/linksgx.sh \
+    && ${AESM_PATH}/linksgx.sh \
     && mkdir -p /var/run/aesmd/ \
     && chown -R aesmd:aesmd /var/run/aesmd/ \
     && chmod 0755 /var/run/aesmd/ \

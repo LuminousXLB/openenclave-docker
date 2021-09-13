@@ -5,7 +5,8 @@ ARG DCAP_VERSION
 
 WORKDIR /root
 
-RUN apt-get update \
+RUN set -x \
+    && apt-get update \
     && apt-get install --no-install-recommends -y \
     ca-certificates \
     curl \
@@ -22,7 +23,8 @@ RUN apt-get update \
 # https://github.com/intel/SGXDataCenterAttestationPrimitives/pull/190
 COPY crl-format.patch .
 
-RUN git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git \
+RUN set -x \
+    && git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git \
     && cd SGXDataCenterAttestationPrimitives \
     && git checkout ${DCAP_VERSION} \
     # fix crl format
@@ -51,7 +53,8 @@ ARG API_KEY
 ARG ADMIN_TOKEN
 ARG USER_TOKEN
 
-RUN test -n "${API_KEY}" \
+RUN set -x \
+    && test -n "${API_KEY}" \
     && test -n "${ADMIN_TOKEN}" \
     && test -n "${USER_TOKEN}" \
     && (test ${CONFIG_TEMPLATE} = ${CONFIG_FILE} || cp ${CONFIG_TEMPLATE} ${CONFIG_FILE}) \

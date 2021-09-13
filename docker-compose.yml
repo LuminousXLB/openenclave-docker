@@ -5,13 +5,13 @@ services:
     build:
       context: ./pccs
       args:
-        # DCAP_VERSION: DCAP_1.10.3
-        CONFIG_TEMPLATE: ./config/default.json
-        HTTPS_PORT: 8081
-        HOST: 0.0.0.0
-        API_KEY: ${API_KEY}
-        ADMIN_TOKEN: ${ADMIN_TOKEN}
-        USER_TOKEN: ${USER_TOKEN}
+        - DCAP_VERSION
+        - CONFIG_TEMPLATE
+        - HTTPS_PORT
+        - HOST
+        - API_KEY
+        - ADMIN_TOKEN
+        - USER_TOKEN
     networks:
       - pccs
 
@@ -21,7 +21,7 @@ services:
       context: .
       dockerfile: Dockerfile.aesmd
       args:
-        PCCS_SERVER: pccs.internal:8081
+        - PCCS_SERVER
     depends_on:
       - pccs.internal
     networks:
@@ -29,108 +29,50 @@ services:
     volumes:
       - aesmd-socket:/var/run/aesmd
 
-  openenclave.base:
-    image: ncl-sgx/openenclave:base-v0.17.1
+  openenclave.share:
+    image: ncl-sgx/openenclave:share-v0.17.1
     build:
-      context: ./openenclave
+      context: .
+      dockerfile: Dockerfile.openencalve
+      target: SHARE
       args:
-        OE_VERSION: v0.17.1
-        PCCS_SERVER: pccs.internal:8081
-    networks:
-      - pccs
-    volumes:
-      - aesmd-socket:/var/run/aesmd
-
-  openenclave.dev:
-    image: ncl-sgx/openenclave:dev-v0.17.1
-    build:
-      context: ./development
-      args:
-        BASE: ncl-sgx/openenclave:base-v0.17.1
-        MBEDTLS_VERSION: 2.27.0
-    depends_on:
-      - openenclave.base
-
-  openenclave.join:
-    image: ncl-sgx/openenclave:join-v0.17.1
-    build:
-      context: ./join
-      args:
-        BASE: ncl-sgx/openenclave:dev-v0.17.1
+        - PCCS_SERVER
+        - MBEDTLS_VERSION
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision
-    volumes:
-      - /dev/sgx:/dev/sgx
-      - /var/run/aesmd:/var/run/aesmd
-      - ./ssh:/home/ubuntu/.ssh
+    environment: 
+      - SGX_AESM_ADDR=1
+      - SHARE_PORT
     networks:
       - pccs
-    depends_on:
-      - openenclave.dev
-      - pccs.internal
-
-  openenclave.intel:
-    image: ncl-sgx/openenclave:intel-v0.17.1
-    build:
-      context: ./intel
-      args:
-        BASE: ncl-sgx/openenclave:dev-v0.17.1
-    devices:
-      - /dev/sgx_enclave:/dev/sgx_enclave
-      - /dev/sgx_provision:/dev/sgx_provision
     volumes:
-      - /dev/sgx:/dev/sgx
-      - /var/run/aesmd:/var/run/aesmd
       - ./ssh:/home/ubuntu/.ssh
       - ./volume/intel:/home
-    networks:
-      - pccs
-    depends_on:
-      - openenclave.dev
-      - pccs.internal
-
-  openenclave.bmv2:
-    image: ncl-sgx/openenclave:bmv2-v0.17.1
-    build:
-      context: ./bmv2
-      args:
-        BASE: ncl-sgx/openenclave:dev-v0.17.1
-    privileged: true
-    devices:
-      - /dev/sgx_enclave:/dev/sgx_enclave
-      - /dev/sgx_provision:/dev/sgx_provision
-    volumes:
       - /dev/sgx:/dev/sgx
-      - /var/run/aesmd:/var/run/aesmd
-      - ./ssh:/home/ubuntu/.ssh
-    networks:
-      - pccs
+      - aesmd-socket:/var/run/aesmd
     depends_on:
-      - openenclave.dev
-      - pccs.internal
+      - aems.internal
 
-  openenclave.ctest:
-    image: ncl-sgx/openenclave:ctest-v0.17.1
-    build:
-      context: ./ctest
-      args:
-        BASE: ncl-sgx/openenclave:base-v0.17.1
-        OE_VERSION: v0.17.1
-    devices:
-      - /dev/sgx_enclave:/dev/sgx_enclave
-      - /dev/sgx_provision:/dev/sgx_provision
-    volumes:
-      - /dev/sgx:/dev/sgx
-      - /var/run/aesmd:/var/run/aesmd
-    networks:
-      - pccs
-    environment:
-      OE_LOG_LEVEL: INFO
-    # command: ctest -V -R mbedtls_tls_e2e
-    depends_on:
-      - openenclave.base
-      - pccs.internal
+  # openenclave.bmv2:
+  #   image: ncl-sgx/openenclave:bmv2-v0.17.1
+  #   build:
+  #     context: ./bmv2
+  #     args:
+  #       BASE: ncl-sgx/openenclave:dev-v0.17.1
+  #   privileged: true
+  #   devices:
+  #     - /dev/sgx_enclave:/dev/sgx_enclave
+  #     - /dev/sgx_provision:/dev/sgx_provision
+  #   volumes:
+  #     - /dev/sgx:/dev/sgx
+  #     - /var/run/aesmd:/var/run/aesmd
+  #     - ./ssh:/home/ubuntu/.ssh
+  #   networks:
+  #     - pccs
+  #   depends_on:
+  #     - openenclave.dev
+  #     - pccs.internal
 
 networks:
   pccs:

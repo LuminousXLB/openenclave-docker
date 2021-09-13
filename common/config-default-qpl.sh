@@ -2,8 +2,6 @@
 
 set -xe
 
-apt-get install --no-install-recommends -y libsgx-dcap-default-qpl
-
 QCNL_CONF=/etc/sgx_default_qcnl.conf
 
 if [ $PCCS_SERVER ]; then
