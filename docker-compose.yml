@@ -14,6 +14,9 @@ services:
         USER_TOKEN: ${USER_TOKEN}
     networks:
       - pccs
+    ports:
+      - 8081:8081
+
 
   openenclave.base:
     image: ncl-sgx/openenclave:base-v0.17.1
