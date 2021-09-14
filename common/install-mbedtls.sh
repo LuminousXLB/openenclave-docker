@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -xe
 
@@ -9,11 +9,12 @@ fi
 
 wget -qO- https://github.com/ARMmbed/mbedtls/archive/refs/tags/v${MBEDTLS_VERSION}.tar.gz | tar xz -C /tmp
 
-WORKDIR=/tmp/mbedtls-$MBEDTLS_VERSION
+TMPDIR=/tmp/mbedtls-$MBEDTLS_VERSION
 CC=clang
 
-mkdir -p $WORKDIR/build
-cd mbedtls-${MBEDTLS_VERSION}/build
+mkdir -p $TMPDIR/build
+pushd $TMPDIR/build
+
 cmake -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DENABLE_TESTING=OFF \
@@ -21,4 +22,5 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 make -j
 make install
 
-rm -rf $WORKDIR
+popd
+rm -rf $TMPDIR

@@ -30,7 +30,7 @@ services:
       - aesmd-socket:/var/run/aesmd
 
   openenclave.share:
-    image: ncl-sgx/openenclave:share-v0.17.1
+    image: ncl-sgx/dev:share
     build:
       context: .
       dockerfile: Dockerfile.openencalve
@@ -41,9 +41,9 @@ services:
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision
-    environment: 
+    environment:
       - SGX_AESM_ADDR=1
-      - SHARE_PORT
+    hostname: ${HOSTNAME}-dev
     networks:
       - pccs
     volumes:
@@ -51,6 +51,8 @@ services:
       - ./volume/intel:/home
       - /dev/sgx:/dev/sgx
       - aesmd-socket:/var/run/aesmd
+    ports:
+      - "22000:22"
     depends_on:
       - aems.internal
 

@@ -1,12 +1,8 @@
-ARG UNAME=ubuntu
-# ARG OE_VERSION
-
-FROM ubuntu:focal AS BASE
+FROM ubuntu:focal AS OPENENCLAVE
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG PCCS_SERVER
-ARG UNAME
 
 COPY ./common /tmp/common
 WORKDIR /tmp
@@ -50,49 +46,10 @@ RUN set -x \
     && /tmp/common/apply-lvi-mitigation.sh \
     # add sgx_prv group
     && groupadd --gid 1001 sgx_prv \
-    # add default user
-    && useradd --create-home --shell /bin/bash ${UNAME} \
-    && echo "${UNAME} ALL=(ALL) NOPASSWD: ALL" >>/etc/sudoers \
-    # set timezone
-    && /tmp/common/set-timezone.sh \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*
 
 
-FROM BASE AS DEVELOPMENT
-
-ARG DEBIAN_FRONTEND=noninteractive
-
-ARG MBEDTLS_VERSION
-
-RUN set -x \
-    && apt-get update \
-    && apt-get install --no-install-recommends -y \
-    autossh \
-    bsdmainutils  \
-    clang-format-10 \
-    clang-tidy-10 \
-    lsof \
-    netcat \
-    openssh-server \
-    python3-dev \
-    unzip \
-    vim \
-    zip \
-    && pip3 --no-cache-dir install \
-    cmakelang \
-    setuptools \
-    wheel \
-    && rm -rf /var/lib/apt/lists/* \
-    # link clang{-format, -tidy, d}-10
-    && ln -s /usr/bin/clang-10 /usr/bin/clang \
-    && ln -s /usr/bin/clang++-10 /usr/bin/clang++ \
-    && ln -s /usr/bin/clang-format-10 /usr/bin/clang-format \
-    && ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy \
-    # install mbedtls
-    && /tmp/common/install-mbedtls.sh 
-
-
-FROM DEVELOPMENT AS INTEL
+FROM OPENENCLAVE AS INTEL
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -121,24 +78,63 @@ RUN set -x \
     && rm ./sgx_linux_x64_sdk_2.14.100.2.bin \
     && echo "source /opt/intel/sgxsdk/environment" >> /etc/profile.d/50-sgxsdk.sh
 
-FROM INTEL AS SHARE
 
-ARG UNAME
+FROM INTEL AS DEVELOPMENT
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ARG MBEDTLS_VERSION
 
 RUN set -x \
     && apt-get update \
     && apt-get install --no-install-recommends -y \
+    bsdmainutils  \
+    clang-format-10 \
+    clang-tidy-10 \
+    lsof \
+    netcat \
+    python3-dev \
+    unzip \
+    vim \
+    zip \
+    && pip3 --no-cache-dir install \
+    cmakelang \
+    setuptools \
+    wheel \
+    && rm -rf /var/lib/apt/lists/* \
+    # link clang{-format, -tidy, d}-10
+    && ln -s /usr/bin/clang-10 /usr/bin/clang \
+    && ln -s /usr/bin/clang++-10 /usr/bin/clang++ \
+    && ln -s /usr/bin/clang-format-10 /usr/bin/clang-format \
+    && ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy \
+    # install mbedtls
+    && MBEDTLS_VERSION=${MBEDTLS_VERSION} /tmp/common/install-mbedtls.sh
+
+
+FROM DEVELOPMENT AS SHARE
+
+WORKDIR /root
+
+RUN set -x \
+    && apt-get update \
+    && apt-get install --no-install-recommends -y \
+    openssh-server \
     rsyslog \
     && rm -rf /var/lib/apt/lists/* \
-    && useradd --create-home --shell /bin/bash jeremy \
-    && echo "jeremy ALL=(ALL) NOPASSWD: ALL" >>/etc/sudoers 
-
-USER ${UNAME}
-
-WORKDIR /home/${UNAME}
-# ARG SHARE_PORT=42522
+    # add default user
+    && groupadd --gid 1000 jiamin \
+    && useradd --create-home --uid 1000 --gid 1000 --shell /bin/bash jiamin \
+    && echo "jiamin ALL=(ALL) NOPASSWD: ALL" >>/etc/sudoers \
+    && groupadd --gid 1002 jeremy \
+    && useradd --create-home --uid 1002 --gid 1002 --shell /bin/bash jeremy \
+    && echo "jeremy ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+    # set timezone
+    && /tmp/common/set-timezone.sh \
+    && rm -rf /tmp/* \
+    # prepare sshd
+    && ssh-keygen -A \
+    && mkdir /run/sshd
 
 CMD set -x \
-    && sudo service rsyslog start \
-    && sudo service ssh start \
-    && autossh -N -R ${SHARE_PORT}:localhost:22 ubuntu@aws.taraxacum.ink
+    && service rsyslog start \
+    && /usr/sbin/sshd -D
