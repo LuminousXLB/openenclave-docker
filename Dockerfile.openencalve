@@ -77,8 +77,8 @@ RUN set -x \
     && chmod +x sgx_linux_x64_sdk_2.14.100.2.bin \
     && echo 'yes' | ./sgx_linux_x64_sdk_2.14.100.2.bin \
     && rm ./sgx_linux_x64_sdk_2.14.100.2.bin \
-    && echo "source /opt/intel/sgxsdk/environment" >> /etc/profile.d/50-sgxsdk.sh
-
+    && echo "source /opt/intel/sgxsdk/environment" >> /etc/profile.d/50-sgxsdk.sh \
+    && echo "SGX_AESM_ADDR=1" >> /etc/environment
 
 FROM INTEL AS DEVELOPMENT
 

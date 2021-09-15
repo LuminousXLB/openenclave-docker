@@ -22,11 +22,15 @@ services:
       dockerfile: Dockerfile.aesmd
       args:
         - PCCS_SERVER
+    devices:
+      - /dev/sgx_enclave:/dev/sgx_enclave
+      - /dev/sgx_provision:/dev/sgx_provision
     depends_on:
       - pccs.internal
     networks:
       - pccs
     volumes:
+      - /dev/sgx:/dev/sgx
       - aesmd-socket:/var/run/aesmd
 
   openenclave.share:
@@ -41,13 +45,10 @@ services:
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
       - /dev/sgx_provision:/dev/sgx_provision
-    environment:
-      - SGX_AESM_ADDR=1
     hostname: ${HOSTNAME}-dev
     networks:
       - pccs
     volumes:
-      - ./ssh:/home/ubuntu/.ssh
       - ./volume/intel:/home
       - /dev/sgx:/dev/sgx
       - aesmd-socket:/var/run/aesmd
