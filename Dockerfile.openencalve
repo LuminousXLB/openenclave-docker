@@ -90,6 +90,7 @@ ARG MBEDTLS_VERSION
 RUN set -x \
     && apt-get update \
     && apt-get install --no-install-recommends -y \
+    bear \
     bsdmainutils  \
     clang-format-10 \
     clang-tidy-10 \
