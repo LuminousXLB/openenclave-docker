@@ -36,6 +36,7 @@ RUN set -x \
     libsgx-enclave-common-dbgsym \
     libsgx-epid-dbgsym \
     libsgx-quote-ex-dbgsym \
+    libsgx-uae-service-dbgsym \
     # install default quote provider library (QPL)
     && PCCS_SERVER=${PCCS_SERVER} /tmp/common/config-default-qpl.sh \
     && ln -s $(readlink -f /usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so.1) /usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so \
