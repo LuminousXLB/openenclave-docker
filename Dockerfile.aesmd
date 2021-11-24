@@ -3,10 +3,11 @@ FROM ubuntu:focal
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PCCS_SERVER
 
-COPY ./common /tmp
+COPY ./common/add-apt-sources.sh /tmp
+COPY ./common/config-default-qpl.sh /tmp
 
 RUN set -x \
-    && tmp/add-apt-sources.sh \
+    && /tmp/add-apt-sources.sh \
     && apt-get install --no-install-recommends -y \
     libsgx-aesm-ecdsa-plugin \
     libsgx-aesm-epid-plugin \
@@ -20,6 +21,7 @@ RUN set -x \
 ENV NAME=aesm_service
 ENV AESM_PATH=/opt/intel/sgx-aesm-service/aesm
 ENV LD_LIBRARY_PATH=/opt/intel/sgx-aesm-service/aesm
+COPY ./common/set-timezone.sh /tmp
 
 RUN set -x \
     && groupadd --gid 1001 sgx_prv \
@@ -29,7 +31,7 @@ RUN set -x \
     && chmod 0755 /var/run/aesmd/ \
     && chown -R aesmd:aesmd /var/opt/aesmd/ \
     && chmod 0750 /var/opt/aesmd/ \
-    && tmp/set-timezone.sh
+    && /tmp/set-timezone.sh
 
 USER aesmd
 
