@@ -74,10 +74,10 @@ RUN set -x \
     && rm -rf /var/lib/apt/lists/*  \
     # install intel sgx sdk
     && . /etc/os-release \
-    && wget https://download.01.org/intel-sgx/latest/linux-latest/distro/${ID}${VERSION_ID}-server/sgx_linux_x64_sdk_2.14.100.2.bin \
-    && chmod +x sgx_linux_x64_sdk_2.14.100.2.bin \
-    && echo 'yes' | ./sgx_linux_x64_sdk_2.14.100.2.bin \
-    && rm ./sgx_linux_x64_sdk_2.14.100.2.bin \
+    && wget https://download.01.org/intel-sgx/latest/linux-latest/distro/${ID}${VERSION_ID}-server/sgx_linux_x64_sdk_2.15.101.1.bin \
+    && chmod +x sgx_linux_x64_sdk_2.15.101.1.bin \
+    && echo 'yes' | ./sgx_linux_x64_sdk_2.15.101.1.bin \
+    && rm ./sgx_linux_x64_sdk_2.15.101.1.bin \
     && echo "source /opt/intel/sgxsdk/environment" >> /etc/profile.d/50-sgxsdk.sh \
     && echo "SGX_AESM_ADDR=1" >> /etc/environment
 
