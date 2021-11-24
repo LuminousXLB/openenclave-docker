@@ -16,7 +16,9 @@ RUN set -x \
     openssl \
     python \
     && curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
-    && apt-get install --no-install-recommends -y nodejs \
+    && apt-get install --no-install-recommends -y \
+    cracklib-runtime \
+    nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # https://github.com/openenclave/openenclave/issues/4139
@@ -29,6 +31,7 @@ RUN set -x \
     && git checkout ${DCAP_VERSION} \
     # fix crl format
     && git apply --reject --whitespace=fix /root/crl-format.patch \
+    # Goto ../../tools/PCKCertSelection/ and build libPCKCertSelection.so, copy it to ./lib/
     && cd tools/PCKCertSelection \
     && make -j -C PCKCertSelectionLib \
     && cd ../../../ \
@@ -37,7 +40,7 @@ RUN set -x \
     && mv SGXDataCenterAttestationPrimitives/tools/PCKCertSelection/out/libPCKCertSelection.so ./pccs/lib/ \
     && rm -rf SGXDataCenterAttestationPrimitives \
     && cd /root/pccs \
-    && npm install \
+    # && npm install \
     && npm config set engine-strict true \
     && npm ci \
     && npm cache clean --force
