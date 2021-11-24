@@ -25,6 +25,6 @@ ln -s $(which g++) ${OE_LVI_BIN_DIR}/g++_symlink
 ${OE_LVI_SCRIPTS_DIR}/generate_wrapper --name=g++ --path=${OE_LVI_BIN_DIR}
 
 mkdir -p ${TMP}
-wget -qO- https://download.01.org/intel-sgx/latest/linux-latest/as.ld.objdump.gold.r3.tar.gz | tar xz -C ${TMP}
+wget -qO- https://download.01.org/intel-sgx/latest/linux-latest/as.ld.objdump.r4.tar.gz | tar xz -C ${TMP}
 cp ${TMP}/external/toolset/${ID}${VERSION_ID}/* ${OE_LVI_BIN_DIR}
 rm -rf ${TMP}
