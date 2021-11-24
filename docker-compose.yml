@@ -1,7 +1,7 @@
 version: "3"
 services:
   pccs.internal:
-    image: ncl-sgx/pccs:1.10
+    image: ncl-sgx/pccs:${DCAP_VERSION}
     build:
       context: ./pccs
       args:
@@ -16,7 +16,7 @@ services:
       - pccs
 
   aems.internal:
-    image: ncl-sgx/aems:2.14
+    image: ncl-sgx/aems:2.15
     build:
       context: .
       dockerfile: Dockerfile.aesmd
@@ -34,7 +34,7 @@ services:
       - aesmd-socket:/var/run/aesmd
 
   openenclave.share:
-    image: ncl-sgx/dev:share
+    image: ncl-sgx/dev:0.17.2
     build:
       context: .
       dockerfile: Dockerfile.openencalve
