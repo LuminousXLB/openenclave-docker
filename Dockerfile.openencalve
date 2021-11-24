@@ -44,12 +44,12 @@ RUN set -x \
     && apt-get install --no-install-recommends -y open-enclave \
     # install cmake
     && pip3 --no-cache-dir install cmake \
-    # apply lvi-mitigation
-    && /tmp/common/apply-lvi-mitigation.sh \
     # add sgx_prv group
     && groupadd --gid 1001 sgx_prv \
     && rm -rf /var/lib/apt/lists/*
 
+# apply lvi-mitigation
+RUN /tmp/common/apply-lvi-mitigation.sh
 
 FROM OPENENCLAVE AS INTEL
 
