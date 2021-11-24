@@ -2,8 +2,6 @@ FROM ubuntu:focal AS OPENENCLAVE
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ARG PCCS_SERVER
-
 COPY ./common /tmp/common
 WORKDIR /tmp
 
@@ -29,21 +27,42 @@ RUN set -x \
     python3-apt \
     python3-pip \
     wget \
-    # install developer packages
+    && rm -rf /var/lib/apt/lists/* \
+    # install cmake
+    && pip3 --no-cache-dir install cmake
+
+ARG PCCS_SERVER
+ARG DCAP_VERSION
+ARG PSW_VERSION
+ARG OPENENCLAVE_VERSION
+
+RUN set -x \
+    && apt-get update \
+    # install SGX PSW
     && apt-get install --no-install-recommends -y \
-    libsgx-dcap-default-qpl-dbgsym \
-    libsgx-dcap-ql-dbgsym \
-    libsgx-enclave-common-dbgsym \
-    libsgx-epid-dbgsym \
-    libsgx-quote-ex-dbgsym \
-    libsgx-uae-service-dbgsym \
+    libsgx-dcap-default-qpl-dbgsym=${DCAP_VERSION} \
+    libsgx-dcap-default-qpl=${DCAP_VERSION} \
+    libsgx-dcap-ql-dbgsym=${DCAP_VERSION} \
+    libsgx-dcap-ql=${DCAP_VERSION} \
+    libsgx-enclave-common-dbgsym=${PSW_VERSION} \
+    libsgx-enclave-common=${PSW_VERSION} \
+    libsgx-epid-dbgsym=${PSW_VERSION} \
+    libsgx-epid=${PSW_VERSION} \
+    libsgx-pce-logic-dbgsym=${DCAP_VERSION} \
+    libsgx-pce-logic=${DCAP_VERSION} \
+    libsgx-qe3-logic-dbgsym=${DCAP_VERSION} \
+    libsgx-qe3-logic=${DCAP_VERSION} \
+    libsgx-quote-ex-dbgsym=${PSW_VERSION} \
+    libsgx-quote-ex=${PSW_VERSION} \
+    libsgx-uae-service-dbgsym=${PSW_VERSION} \
+    libsgx-uae-service=${PSW_VERSION} \
+    libsgx-urts-dbgsym=${PSW_VERSION} \
+    libsgx-urts=${PSW_VERSION} \
     # install default quote provider library (QPL)
     && PCCS_SERVER=${PCCS_SERVER} /tmp/common/config-default-qpl.sh \
     && ln -s $(readlink -f /usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so.1) /usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so \
     # install open-enclave
-    && apt-get install --no-install-recommends -y open-enclave \
-    # install cmake
-    && pip3 --no-cache-dir install cmake \
+    && apt-get install --no-install-recommends -y open-enclave=${OPENENCLAVE_VERSION} \
     # add sgx_prv group
     && groupadd --gid 1001 sgx_prv \
     && rm -rf /var/lib/apt/lists/*
@@ -120,9 +139,10 @@ WORKDIR /root
 
 RUN set -x \
     && apt-get update \
-    && apt-get install --no-install-recommends -y \
+    && apt-get install -y \
     openssh-server \
     rsyslog \
+    zsh \
     && rm -rf /var/lib/apt/lists/* \
     # add default user
     && groupadd --gid 1000 jiamin \

@@ -1,11 +1,11 @@
 version: "3"
 services:
   pccs.internal:
-    image: ncl-sgx/pccs:${DCAP_VERSION}
+    image: ncl-sgx/pccs:${DCAP_REPO_VERSION}
     build:
       context: ./pccs
       args:
-        - DCAP_VERSION
+        - DCAP_REPO_VERSION
         - CONFIG_TEMPLATE
         - HTTPS_PORT
         - HOST
@@ -16,11 +16,13 @@ services:
       - pccs
 
   aems.internal:
-    image: ncl-sgx/aems:2.15
+    image: ncl-sgx/aems:${PSW_VERSION}
     build:
       context: .
       dockerfile: Dockerfile.aesmd
       args:
+        - PSW_VERSION
+        - DCAP_VERSION
         - PCCS_SERVER
     devices:
       - /dev/sgx_enclave:/dev/sgx_enclave
@@ -34,12 +36,15 @@ services:
       - aesmd-socket:/var/run/aesmd
 
   openenclave.share:
-    image: ncl-sgx/dev:0.17.2
+    image: ncl-sgx/dev:${OPENENCLAVE_VERSION}
     build:
       context: .
       dockerfile: Dockerfile.openencalve
       target: SHARE
       args:
+        - PSW_VERSION
+        - DCAP_VERSION
+        - OPENENCLAVE_VERSION
         - PCCS_SERVER
         - MBEDTLS_VERSION
     devices:

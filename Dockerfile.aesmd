@@ -2,6 +2,8 @@ FROM ubuntu:focal
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PCCS_SERVER
+ARG PSW_VERSION
+ARG DCAP_VERSION
 
 COPY ./common/add-apt-sources.sh /tmp
 COPY ./common/config-default-qpl.sh /tmp
@@ -9,11 +11,12 @@ COPY ./common/config-default-qpl.sh /tmp
 RUN set -x \
     && /tmp/add-apt-sources.sh \
     && apt-get install --no-install-recommends -y \
-    libsgx-aesm-ecdsa-plugin \
-    libsgx-aesm-epid-plugin \
-    libsgx-aesm-quote-ex-plugin \
-    libsgx-dcap-default-qpl \
-    sgx-aesm-service \
+    libsgx-aesm-ecdsa-plugin=${PSW_VERSION} \
+    libsgx-aesm-epid-plugin=${PSW_VERSION} \
+    libsgx-aesm-pce-plugin=${PSW_VERSION} \
+    libsgx-aesm-quote-ex-plugin=${PSW_VERSION} \
+    libsgx-dcap-default-qpl=${DCAP_VERSION} \
+    sgx-aesm-service=${PSW_VERSION} \
     tzdata \
     && PCCS_SERVER=${PCCS_SERVER} /tmp/config-default-qpl.sh \
     && rm -rf /var/lib/apt/lists/*

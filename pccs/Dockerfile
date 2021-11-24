@@ -1,7 +1,6 @@
 FROM ubuntu:focal
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG DCAP_VERSION
 
 WORKDIR /root
 
@@ -24,11 +23,12 @@ RUN set -x \
 # https://github.com/openenclave/openenclave/issues/4139
 # https://github.com/intel/SGXDataCenterAttestationPrimitives/pull/190
 COPY crl-format.patch .
+ARG DCAP_REPO_VERSION
 
 RUN set -x \
     && git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git \
     && cd SGXDataCenterAttestationPrimitives \
-    && git checkout ${DCAP_VERSION} \
+    && git checkout ${DCAP_REPO_VERSION} \
     # fix crl format
     && git apply --reject --whitespace=fix /root/crl-format.patch \
     # Goto ../../tools/PCKCertSelection/ and build libPCKCertSelection.so, copy it to ./lib/
