@@ -1,28 +1,26 @@
 diff --git a/QuoteGeneration/pccs/services/pckcrlService.js b/QuoteGeneration/pccs/services/pckcrlService.js
-index 7484341..1543ba9 100644
+index c410c26..a2511e5 100644
 --- a/QuoteGeneration/pccs/services/pckcrlService.js
 +++ b/QuoteGeneration/pccs/services/pckcrlService.js
-@@ -44,9 +44,5 @@ export async function getPckCrl(ca) {
-     result['pckcrl'] = pckcrl.pck_crl;
+@@ -45,7 +45,7 @@ export async function getPckCrl(ca, encoding) {
    }
-
--  // To keep backward compatibility.
--  // TODO : for PCS alignment, need to remove this conversion
--  result['pckcrl'] = Buffer.from(result['pckcrl'], 'utf8').toString('hex');
--
+ 
+   if (!encoding || encoding.toUpperCase() != 'DER') {
+-    result['pckcrl'] = Buffer.from(result['pckcrl'], 'utf8').toString('hex');
++    // result['pckcrl'] = Buffer.from(result['pckcrl'], 'utf8').toString('hex');
+   }
+ 
    return result;
- }
 diff --git a/QuoteGeneration/pccs/services/rootcacrlService.js b/QuoteGeneration/pccs/services/rootcacrlService.js
-index ed6d926..469276f 100644
+index 18f81d1..b28c629 100644
 --- a/QuoteGeneration/pccs/services/rootcacrlService.js
 +++ b/QuoteGeneration/pccs/services/rootcacrlService.js
-@@ -47,9 +47,5 @@ export async function getRootCaCrl() {
-     crl = await cachingModeManager.getRootCACrlFromPCS(rootca);
+@@ -48,7 +48,7 @@ export async function getRootCaCrl() {
    }
-
--  // To keep backward compatibility.
--  // TODO : for PCS alignment, need to remove this conversion
+ 
+   // To keep backward compatibility. 
 -  crl = Buffer.from(crl, 'utf8').toString('hex');
--
++  // crl = Buffer.from(crl, 'utf8').toString('hex');
+   
    return crl;
  }
